@@ -4,6 +4,8 @@ from PySide6 import QtWidgets
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QFormLayout, QLineEdit, QPushButton, QMessageBox
 
+from validations.utils import validate_start_date_and_today, validate_date_end, validate_date
+
 
 class DateForm(QWidget):
     def __init__(self):
@@ -36,26 +38,32 @@ class DateForm(QWidget):
         layout.addWidget(self.generate_button)
         self.generate_button.clicked.connect(self.generate_period)
 
-    def validation(self, date, buttom):
-        icon = QIcon("images/check.png")
-        try:
-            datetime.strptime(date, '%d/%m/%y')
-            buttom.setIcon(icon)
-        except Exception as e:
-            error_dialog = QtWidgets.QErrorMessage()
-            error_dialog.showMessage('No seas soquete!! intente nuevamente con el formato dd/mm/yy')
-            print(str(e))
-            error_dialog.exec()
-
     def validate_date_one(self):
         date = self.start_date_edit.text()
         buttom = self.generate_start_buttom
-        self.validation(date, buttom)
+        try:
+            validate_date(date)
+            if validate_start_date_and_today(date):
+                icon = QIcon("images/check.png")
+                buttom.setIcon(icon)
+            else:
+                raise Exception
+        except:
+            QMessageBox.warning(self, "Error", "Invalid date")
 
     def validate_date_two(self):
-        date = self.end_date_edit.text()
+        end_date = self.end_date_edit.text()
+        start_date = self.start_date_edit.text()
         buttom = self.generate_end_buttom
-        self.validation(date, buttom)
+        try:
+            validate_date(end_date)
+            if validate_date_end(end_date, start_date):
+                icon = QIcon("images/check.png")
+                buttom.setIcon(icon)
+            else:
+                raise Exception
+        except:
+            QMessageBox.warning(self, "Error", "Invalid date")
 
     def generate_period(self):
         start_date = self.start_date_edit.text()
