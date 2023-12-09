@@ -9,7 +9,7 @@ class DateForm(QWidget):
         super().__init__()
 
         # Configurar el formulario
-        self.setWindowTitle("Exam Generator App")
+        self.setWindowTitle("Exam Date Generator App")
         self.setWindowIcon(QIcon('images/files.ico'))
         self.setGeometry(400, 400, 600, 350)
         layout = QFormLayout()
