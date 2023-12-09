@@ -9,8 +9,9 @@ class DateForm(QWidget):
         super().__init__()
 
         # Configurar el formulario
-        self.setWindowTitle("Ingresar periodo de fechas")
-        self.setGeometry(100, 100, 400, 150)
+        self.setWindowTitle("Exam Generator App")
+        self.setWindowIcon(QIcon('images/files.ico'))
+        self.setGeometry(400, 400, 600, 350)
         layout = QFormLayout()
         self.setLayout(layout)
 
