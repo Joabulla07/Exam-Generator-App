@@ -1,9 +1,9 @@
 import pandas as pd
 
 
-def convert_excel_to_dataframe():
-    df = pd.read_excel("../docs/materias.xlsx")
-    return df
+# def convert_excel_to_dataframe():
+#     df = pd.read_excel("../docs/materias.xlsx")
+#     return df
 
 
 def divide_dataframe_in_grade(df):
