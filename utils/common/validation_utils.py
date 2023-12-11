@@ -45,5 +45,4 @@ def validate_date_is_not_holiday_or_weekend(date):
     if date.weekday() != 5 and date.weekday() != 6:
         if ar_holidays.get(str(date.date())) is None:
             return True
-        return False
     return False

@@ -1,7 +1,7 @@
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QLabel, QFormLayout, QLineEdit, QPushButton, QMessageBox
 
-from utils.validation_utils import validate_start_date_and_today, validate_date_end, validate_date
+from utils.common.validation_utils import validate_start_date_and_today, validate_date_end, validate_date
 
 
 class DateForm(QWidget):

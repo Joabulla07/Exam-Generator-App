@@ -1,0 +1,13 @@
+
+[run]
+omit =
+    ./venv/*
+    ./tests/*
+    */__init__.py
+    **/jupyter/*
+    **/docs/*
+    ./main.py
+    **/utils/model/*
+
+[report]
+show_missing = True
