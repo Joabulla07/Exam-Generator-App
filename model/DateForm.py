@@ -4,6 +4,7 @@ import pandas as pd
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtWidgets import QWidget, QLabel, QFormLayout, QLineEdit, QPushButton, QMessageBox, QFileDialog
 
+from services.exam_calls import ExamCalls
 from utils.common.validation_utils import validate_start_date_and_today, validate_date_end, validate_date
 
 
@@ -153,4 +154,7 @@ class DateForm(QWidget):
                       "end_date_second_period": end_date_second_period}
             print(period)
 
-        # ToDo: funcion general mesas aca dentro y descargue un csv o exel con los datos
+            # ToDo: funcion general mesas aca dentro y descargue un csv o exel con los datos
+
+            call = ExamCalls(df, period)
+            first_year_call = call.create_first_year_call_first_period()
