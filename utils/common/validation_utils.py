@@ -16,8 +16,8 @@ def validate_start_date_and_today(start_date):
     :return: Bool
     """
     date_today = datetime.now()
-    start_date = datetime.strptime(start_date, '%d/%m/%y')
-    if start_date.date() >= date_today.date():
+    start_date_convert = datetime.strptime(start_date, '%d/%m/%y')
+    if start_date_convert.date() >= date_today.date() and validate_date_is_not_holiday_or_weekend(start_date):
         return True
     return False
 
@@ -29,9 +29,9 @@ def validate_date_end(end_date, start_date):
     :param end_date:
     :return:
     """
-    end_date = datetime.strptime(end_date, '%d/%m/%y')
-    start_date = datetime.strptime(start_date, '%d/%m/%y')
-    if end_date > start_date:
+    end_date_converted = datetime.strptime(end_date, '%d/%m/%y')
+    start_date_converted = datetime.strptime(start_date, '%d/%m/%y')
+    if end_date_converted > start_date_converted and validate_date_is_not_holiday_or_weekend(end_date):
         return True
     return False
 

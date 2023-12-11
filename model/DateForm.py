@@ -1,7 +1,8 @@
 from datetime import datetime
 
+import pandas as pd
 from PySide6.QtGui import QIcon, Qt
-from PySide6.QtWidgets import QWidget, QLabel, QFormLayout, QLineEdit, QPushButton, QMessageBox
+from PySide6.QtWidgets import QWidget, QLabel, QFormLayout, QLineEdit, QPushButton, QMessageBox, QFileDialog
 
 from utils.common.validation_utils import validate_start_date_and_today, validate_date_end, validate_date
 
@@ -84,12 +85,13 @@ class DateForm(QWidget):
 
     def validate_date_one_for_second_period(self):
         start_date_first = datetime.strptime(self.start_date_edit_fist_call.text(), '%d/%m/%y')
+        end_date_first = datetime.strptime(self.end_date_edit_fist_call.text(), '%d/%m/%y')
         start_date = self.start_date_edit_second_call.text()
         buttom = self.generate_start_buttom_second
         try:
             validate_date(start_date)
             end_date = datetime.strptime(start_date, '%d/%m/%y')
-            if end_date > start_date_first:
+            if end_date > start_date_first and end_date > end_date_first:
                 icon = QIcon("images/check.png")
                 buttom.setIcon(icon)
                 return True
@@ -113,7 +115,6 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid date")
 
-
     def validate_date_two_second_period(self):
         end_date = self.end_date_edit_second_call.text()
         start_date = self.start_date_edit_second_call.text()
@@ -129,15 +130,27 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid date")
 
+    def import_excel(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Importar Excel', ".", "Archivos Excel (*.xlsx *.xls)")
+        if file_path:
+            data = pd.read_excel(file_path)
+            # print(data)
+            return data
+        else:
+            return None
+
     def generate_period(self):
         start_date_first_period = self.start_date_edit_fist_call.text()
         start_date_second_period = self.start_date_edit_second_call.text()
         end_date_first_period = self.end_date_edit_fist_call.text()
         end_date_second_period = self.end_date_edit_second_call.text()
-        if (self.validate_date_one_for_first_period() and self.validate_date_one_for_second_period()
-                and self.validate_date_two_first_period() and self.validate_date_two_second_period()):
+        if (((self.validate_date_one_for_first_period() and self.validate_date_one_for_second_period()
+              and self.validate_date_two_first_period() and self.validate_date_two_second_period()))):
+            df = self.import_excel()
             period = {"start_date_first_period": start_date_first_period,
                       "end_date_first_period": end_date_first_period,
                       "start_date_second_period": start_date_second_period,
                       "end_date_second_period": end_date_second_period}
             print(period)
+
+        # ToDo: funcion general mesas aca dentro y descargue un csv o exel con los datos
