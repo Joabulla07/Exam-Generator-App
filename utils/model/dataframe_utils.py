@@ -1,4 +1,5 @@
 import pandas as pd
+import unicodedata
 
 
 def convert_excel_to_dataframe():
@@ -9,6 +10,9 @@ def convert_excel_to_dataframe():
 def divide_dataframe_in_grade(df):
     columns = df.columns.values.tolist()
     df.columns = [col.lower() for col in columns]
+    df.materia = [mat.lower() for mat in df.materia]
+    df["materia"] = df["materia"].apply(remove_accents)
+    df.materia = [mat.upper() for mat in df.materia]
     groups = df.groupby(df.grado)
     grade_1 = groups.get_group(1)
     grade_2 = groups.get_group(2)
@@ -24,3 +28,7 @@ def divide_dataframe_in_grade(df):
 
 def sort_dataframe(df):
     return df.sort_values(by="materia")
+
+
+def remove_accents(text):
+    return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')

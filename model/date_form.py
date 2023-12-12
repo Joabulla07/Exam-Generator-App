@@ -4,7 +4,7 @@ import pandas as pd
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtWidgets import QWidget, QLabel, QFormLayout, QLineEdit, QPushButton, QMessageBox, QFileDialog
 
-from services.exam_calls import ExamCall
+from services.exam_call import ExamCall
 from utils.common.validation_utils import validate_start_date_and_today, validate_date_end, validate_date
 
 
