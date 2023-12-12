@@ -4,7 +4,7 @@ from utils.common.validation_utils import validate_date_is_not_holiday_or_weeken
 from utils.model.dataframe_utils import divide_dataframe_in_grade
 
 
-class ExamCalls:
+class ExamCall:
 
     def __init__(self, df, period):
         self.df = df
