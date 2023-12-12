@@ -15,7 +15,7 @@ class ExamCall:
         self.grade_4 = divide_dataframe_in_grade(self.df)[3]
         self.grade_5 = divide_dataframe_in_grade(self.df)[4]
 
-    def get_list_of_dates(self):
+    def get_list_of_dates(self) -> list:
         start_date = datetime.strptime(self.period['start_date_first_period'], '%d/%m/%y')
         end_date = datetime.strptime(self.period['end_date_first_period'], '%d/%m/%y')
         date_list = [(start_date + timedelta(days=d)).strftime("%d/%m/%y")

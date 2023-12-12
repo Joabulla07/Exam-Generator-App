@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtWidgets import QWidget, QLabel, QFormLayout, QLineEdit, QPushButton, QMessageBox, QFileDialog
+from pandas import DataFrame
 
 from services.exam_call import ExamCall
 from utils.common.validation_utils import validate_start_date_and_today, validate_date_end, validate_date
@@ -70,7 +71,7 @@ class DateForm(QWidget):
         layout.addWidget(self.generate_button)
         self.generate_button.clicked.connect(self.generate_period)
 
-    def validate_date_one_for_first_period(self):
+    def validate_date_one_for_first_period(self) -> bool:
         start_date = self.start_date_edit_fist_call.text()
         buttom = self.generate_start_buttom_first
         try:
@@ -84,7 +85,7 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid date")
 
-    def validate_date_one_for_second_period(self):
+    def validate_date_one_for_second_period(self) -> bool:
         start_date_first = datetime.strptime(self.start_date_edit_fist_call.text(), '%d/%m/%y')
         end_date_first = datetime.strptime(self.end_date_edit_fist_call.text(), '%d/%m/%y')
         start_date = self.start_date_edit_second_call.text()
@@ -101,7 +102,7 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid date")
 
-    def validate_date_two_first_period(self):
+    def validate_date_two_first_period(self) -> bool:
         end_date = self.end_date_edit_fist_call.text()
         start_date = self.start_date_edit_fist_call.text()
         buttom = self.generate_end_buttom_first
@@ -116,7 +117,7 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid date")
 
-    def validate_date_two_second_period(self):
+    def validate_date_two_second_period(self) -> bool:
         end_date = self.end_date_edit_second_call.text()
         start_date = self.start_date_edit_second_call.text()
         buttom = self.generate_end_buttom_second
@@ -131,7 +132,7 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid date")
 
-    def import_excel(self):
+    def import_excel(self) -> DataFrame | None:
         file_path, _ = QFileDialog.getOpenFileName(self, 'Importar Excel', ".", "Archivos Excel (*.xlsx *.xls)")
         if file_path:
             data = pd.read_excel(file_path)

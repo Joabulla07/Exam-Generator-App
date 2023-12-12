@@ -1,5 +1,6 @@
 import pandas as pd
 import unicodedata
+from pandas import DataFrame
 
 
 def convert_excel_to_dataframe():
@@ -7,7 +8,7 @@ def convert_excel_to_dataframe():
     return df
 
 
-def divide_dataframe_in_grade(df):
+def divide_dataframe_in_grade(df) -> tuple:
     columns = df.columns.values.tolist()
     df.columns = [col.lower() for col in columns]
     df.materia = [mat.lower() for mat in df.materia]
@@ -26,9 +27,9 @@ def divide_dataframe_in_grade(df):
             sort_dataframe(grade_5))
 
 
-def sort_dataframe(df):
+def sort_dataframe(df) -> DataFrame:
     return df.sort_values(by="materia")
 
 
-def remove_accents(text):
+def remove_accents(text) -> str:
     return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')

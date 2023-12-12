@@ -9,7 +9,7 @@ def validate_date(date):
     datetime.strptime(date, '%d/%m/%y')
 
 
-def validate_start_date_and_today(start_date):
+def validate_start_date_and_today(start_date) -> bool:
     """
     Validate that the start date is greater or equal to the date today
     :param start_date:
@@ -22,7 +22,7 @@ def validate_start_date_and_today(start_date):
     return False
 
 
-def validate_date_end(end_date, start_date):
+def validate_date_end(end_date, start_date) -> bool:
     """
     Validate that the end date is greater than the start_date
     :param start_date:
@@ -36,7 +36,7 @@ def validate_date_end(end_date, start_date):
     return False
 
 
-def validate_date_is_not_holiday_or_weekend(date):
+def validate_date_is_not_holiday_or_weekend(date) -> bool:
     """
     Return True if the date is not in the holiday or weekend
     :param date:
