@@ -32,4 +32,4 @@ jobs:
       env:
         COVERAGE_FAIL_UNDER: 5
       run: |
-        pytest --cov-config=.coveragerc --cov=. --cov-fail_under=$COVERAGE_FAIL_UNDER tests/unit
+        pytest --cov-config=.coveragerc --cov=. --cov-fail-under=5 tests/unit
