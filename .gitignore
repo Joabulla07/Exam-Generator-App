@@ -6,3 +6,4 @@ model/__pycache__/
 venv
 docs
 jupyter
+.coverage

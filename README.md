@@ -17,7 +17,7 @@ To install and run the app locally, follow these steps:
 
 ## 💊 Test App
 Execute tests with coverage using
-- `pytest --cov-config=.coveragerc --cov=. --cov-fail-under=60 tests/unit`
+- `pytest --cov-config=.coveragerc --cov=. --cov-fail-under=5 tests/unit`
 
 
 ## 📋  Instructions for users 

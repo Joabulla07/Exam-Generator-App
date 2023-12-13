@@ -1,3 +1,4 @@
+import mock
 import pytest
 
 from utils.common.validation_utils import *
@@ -20,7 +21,7 @@ def test_validate_date_invalid():
 
 @pytest.mark.unit
 def test_validate_start_date_and_today_true():
-    date = "10/12/33"
+    date = "12/01/29"
     assert validate_start_date_and_today(date) is True
 
 
