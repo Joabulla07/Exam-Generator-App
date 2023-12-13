@@ -22,13 +22,11 @@ class DateForm(QWidget):
 
         self.start_date_edit_fist_call = QLineEdit(self)
         self.end_date_edit_fist_call = QLineEdit(self)
-        self.start_date_edit_second_call = QLineEdit(self)
-        self.end_date_edit_second_call = QLineEdit(self)
         self.start_date_edit_recess = QLineEdit(self)
         self.end_date_edit_recess = QLineEdit(self)
 
         # FIRST CALL
-        self.title_first = QLabel("PRIMER LLAMADO", self)
+        self.title_first = QLabel("FECHA DEL PERIODO DE MESAS", self)
         self.title_first.setStyleSheet(
             """font-weight: bold;
                margin: 2px;
@@ -47,27 +45,6 @@ class DateForm(QWidget):
         self.generate_end_buttom_first.setFixedSize(60, 20)
         layout.addWidget(self.generate_end_buttom_first)
         self.generate_end_buttom_first.clicked.connect(self.validate_date_two_first_period)
-
-        # SECOND CALL
-        self.title_second = QLabel("SEGUNDO LLAMADO", self)
-        self.title_second.setStyleSheet(
-            """font-weight: bold;
-               margin: 2px;
-               font-size: 20px;
-            """
-        )
-        layout.addWidget(self.title_second)
-        layout.addRow(QLabel("Fecha de inicio (dd/mm/yy):"), self.start_date_edit_second_call)
-        self.generate_start_buttom_second = QPushButton("Validar")
-        self.generate_start_buttom_second.setFixedSize(60, 20)
-        layout.addWidget(self.generate_start_buttom_second)
-        self.generate_start_buttom_second.clicked.connect(self.validate_date_one_for_second_period)
-
-        layout.addRow(QLabel("Fecha de fin (dd/mm/yy):"), self.end_date_edit_second_call)
-        self.generate_end_buttom_second = QPushButton("Validar")
-        self.generate_end_buttom_second.setFixedSize(60, 20)
-        layout.addWidget(self.generate_end_buttom_second)
-        self.generate_end_buttom_second.clicked.connect(self.validate_date_two_second_period)
 
         # RECESO
         self.title_recess = QLabel("RECESO Y FECHAS QUE NO SE RINDEN MATERIAS", self)
@@ -128,23 +105,6 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid date")
 
-    def validate_date_one_for_second_period(self) -> bool:
-        start_date_first = datetime.strptime(self.start_date_edit_fist_call.text(), '%d/%m/%y')
-        end_date_first = datetime.strptime(self.end_date_edit_fist_call.text(), '%d/%m/%y')
-        start_date = self.start_date_edit_second_call.text()
-        buttom = self.generate_start_buttom_second
-        try:
-            validate_date(start_date)
-            end_date = datetime.strptime(start_date, '%d/%m/%y')
-            if end_date > start_date_first and end_date > end_date_first:
-                icon = QIcon("images/check.png")
-                buttom.setIcon(icon)
-                return True
-            else:
-                raise Exception
-        except:
-            QMessageBox.warning(self, "Error", "Invalid date")
-
     def validate_date_two_first_period(self) -> bool:
         end_date = self.end_date_edit_fist_call.text()
         start_date = self.start_date_edit_fist_call.text()
@@ -160,20 +120,6 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid date")
 
-    def validate_date_two_second_period(self) -> bool:
-        end_date = self.end_date_edit_second_call.text()
-        start_date = self.start_date_edit_second_call.text()
-        buttom = self.generate_end_buttom_second
-        try:
-            validate_date(end_date)
-            if validate_date_end(end_date, start_date):
-                icon = QIcon("images/check.png")
-                buttom.setIcon(icon)
-                return True
-            else:
-                raise Exception
-        except:
-            QMessageBox.warning(self, "Error", "Invalid date")
 
     def import_excel(self) -> DataFrame | None:
         file_path, _ = QFileDialog.getOpenFileName(self, 'Importar Excel', ".", "Archivos Excel (*.xlsx *.xls)")
@@ -186,18 +132,14 @@ class DateForm(QWidget):
 
     def generate_period(self):
         start_date_first_period = self.start_date_edit_fist_call.text()
-        start_date_second_period = self.start_date_edit_second_call.text()
         end_date_first_period = self.end_date_edit_fist_call.text()
-        end_date_second_period = self.end_date_edit_second_call.text()
         start_recess_date = "None" if not self.start_date_edit_recess.text() else self.start_date_edit_recess.text()
         end_recess_date = "None" if not self.end_date_edit_recess.text() else self.end_date_edit_recess.text()
-        if (((self.validate_date_one_for_first_period() and self.validate_date_one_for_second_period()
-              and self.validate_date_two_first_period() and self.validate_date_two_second_period()))):
+        if (((self.validate_date_one_for_first_period()
+              and self.validate_date_two_first_period()))):
             df = self.import_excel()
             period = {"start_date_first_period": start_date_first_period,
                       "end_date_first_period": end_date_first_period,
-                      "start_date_second_period": start_date_second_period,
-                      "end_date_second_period": end_date_second_period,
                       "start_recess_date": start_recess_date,
                       "end_recess_date": end_recess_date}
             print(period)
