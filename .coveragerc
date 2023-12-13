@@ -8,6 +8,7 @@ omit =
     **/docs/*
     ./main.py
     **/utils/model/*
+    **/model/materia.py
 
 [report]
 show_missing = True
