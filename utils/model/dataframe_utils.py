@@ -8,16 +8,19 @@ def convert_excel_to_dataframe():
     return df
 
 
-def convert_dataframe_lower_upper_accent(df:DataFrame):
+def convert_dataframe_lower_upper_accent(df):
     columns = df.columns.values.tolist()
-    df.columns = [col.lower() for col in columns]
+    df.columns = [remove_accents(col) for col in [col.lower() for col in columns]]
     df.materia = [mat.lower() for mat in df.materia]
-    df["materia"] = df["materia"].apply(remove_accents)
+    df.materia = df["materia"].apply(remove_accents)
     df.materia = [mat.upper() for mat in df.materia]
+    df.dia = [d.lower() for d in df.dia]
+    df.dia = df["dia"].apply(remove_accents)
+    df.dia = [d.upper() for d in df.dia]
     return df
 
 
-def divide_dataframe_in_grade(df:DataFrame) -> tuple:
+def divide_dataframe_in_grade(df: DataFrame) -> tuple:
     df = convert_dataframe_lower_upper_accent(df)
     groups = df.groupby(df.grado)
     grade_1 = groups.get_group(1)
@@ -32,7 +35,7 @@ def divide_dataframe_in_grade(df:DataFrame) -> tuple:
             sort_dataframe(grade_5))
 
 
-def sort_dataframe(df:DataFrame) -> DataFrame:
+def sort_dataframe(df: DataFrame) -> DataFrame:
     return df.sort_values(by="materia")
 
 

@@ -42,11 +42,11 @@ class ExamCall:
         else:
             df = self.grade_5
 
-        for materias in df["materia"]:
-            if materias[-1].isnumeric():
-                materia_objects.append(Materia(grado=grado, nombre=materias[:-1], num_corr=materias[-1]))
+        for i in range(len(df)):
+            if df.iloc[i]["materia"][-1].isnumeric():
+                materia_objects.append(Materia(grado=grado, nombre=df.iloc[i]["materia"][:-1], num_corr=df.iloc[i]["materia"][-1], dia=df.iloc[i]["dia"]))
             else:
-                materia_objects.append(Materia(grado=grado, nombre=materias[:-1]))
+                materia_objects.append(Materia(grado=grado, nombre=df.iloc[i]["materia"][:-1], dia=df.iloc[i]["dia"]))
 
         materia_objects.sort(key=lambda materia: materia.num_corr)
         return materia_objects
