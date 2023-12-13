@@ -24,6 +24,8 @@ class DateForm(QWidget):
         self.end_date_edit_fist_call = QLineEdit(self)
         self.start_date_edit_second_call = QLineEdit(self)
         self.end_date_edit_second_call = QLineEdit(self)
+        self.start_date_edit_recess = QLineEdit(self)
+        self.end_date_edit_recess = QLineEdit(self)
 
         # FIRST CALL
         self.title_first = QLabel("PRIMER LLAMADO", self)
@@ -67,9 +69,50 @@ class DateForm(QWidget):
         layout.addWidget(self.generate_end_buttom_second)
         self.generate_end_buttom_second.clicked.connect(self.validate_date_two_second_period)
 
+        # RECESO
+        self.title_recess = QLabel("RECESO Y FECHAS QUE NO SE RINDEN MATERIAS", self)
+        self.title_recess.setStyleSheet(
+            """font-weight: bold;
+               margin: 2px;
+               font-size: 20px;
+            """
+        )
+        layout.addWidget(self.title_recess)
+        layout.addRow(QLabel("Fecha de inicio (dd/mm/yy):"), self.start_date_edit_recess)
+        self.generate_start_buttom_recess = QPushButton("Validar")
+        self.generate_start_buttom_recess.setFixedSize(60, 20)
+        layout.addWidget(self.generate_start_buttom_recess)
+        self.generate_start_buttom_recess.clicked.connect(self.validate_start_recess)
+
+        layout.addRow(QLabel("Fecha de fin (dd/mm/yy):"), self.end_date_edit_recess)
+        self.generate_end_buttom_recess = QPushButton("Validar")
+        self.generate_end_buttom_recess.setFixedSize(60, 20)
+        layout.addWidget(self.generate_end_buttom_recess)
+        self.generate_end_buttom_recess.clicked.connect(self.validate_end_recess)
+
         self.generate_button = QPushButton("Generar", self)
         layout.addWidget(self.generate_button)
         self.generate_button.clicked.connect(self.generate_period)
+
+    def validate_start_recess(self):
+        start_date = self.start_date_edit_recess.text()
+        buttom = self.generate_start_buttom_recess
+        try:
+            validate_date(start_date)
+            icon = QIcon("images/check.png")
+            buttom.setIcon(icon)
+        except:
+            QMessageBox.warning(self, "Error", "Invalid format")
+
+    def validate_end_recess(self):
+        end_date = self.end_date_edit_recess.text()
+        buttom = self.generate_end_buttom_recess
+        try:
+            validate_date(end_date)
+            icon = QIcon("images/check.png")
+            buttom.setIcon(icon)
+        except:
+            QMessageBox.warning(self, "Error", "Invalid format")
 
     def validate_date_one_for_first_period(self) -> bool:
         start_date = self.start_date_edit_fist_call.text()
@@ -146,16 +189,20 @@ class DateForm(QWidget):
         start_date_second_period = self.start_date_edit_second_call.text()
         end_date_first_period = self.end_date_edit_fist_call.text()
         end_date_second_period = self.end_date_edit_second_call.text()
+        start_recess_date = "None" if not self.start_date_edit_recess.text() else self.start_date_edit_recess.text()
+        end_recess_date = "None" if not self.end_date_edit_recess.text() else self.end_date_edit_recess.text()
         if (((self.validate_date_one_for_first_period() and self.validate_date_one_for_second_period()
               and self.validate_date_two_first_period() and self.validate_date_two_second_period()))):
             df = self.import_excel()
             period = {"start_date_first_period": start_date_first_period,
                       "end_date_first_period": end_date_first_period,
                       "start_date_second_period": start_date_second_period,
-                      "end_date_second_period": end_date_second_period}
+                      "end_date_second_period": end_date_second_period,
+                      "start_recess_date": start_recess_date,
+                      "end_recess_date": end_recess_date}
             print(period)
 
             # ToDo: funcion general mesas aca dentro y descargue un csv o exel con los datos
 
-            call = ExamCall(df, period)
-            first_year_call = call.create_first_year_call_first_period()
+            # call = ExamCall(df, period)
+            # first_year_call = call.create_first_year_call_first_period()
