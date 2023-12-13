@@ -35,15 +35,15 @@ class ExamCall:
                 definity_date_list.append(dates)
         return definity_date_list
 
-    def create_materia_objects(self, grado: int) -> list:
+    def create_materia_objects(self, grade: int) -> list:
         materia_objects = []
-        if grado == 1:
+        if grade == 1:
             df = self.grade_1
-        elif grado == 2:
+        elif grade == 2:
             df = self.grade_2
-        elif grado == 3:
+        elif grade == 3:
             df = self.grade_3
-        elif grado == 4:
+        elif grade == 4:
             df = self.grade_4
         else:
             df = self.grade_5
@@ -51,10 +51,10 @@ class ExamCall:
         for i in range(len(df)):
             if df.iloc[i]["materia"][-1].isnumeric():
                 materia_objects.append(
-                    Materia(grado=grado, nombre=df.iloc[i]["materia"][:-1], num_corr=df.iloc[i]["materia"][-1],
+                    Materia(grado=grade, nombre=df.iloc[i]["materia"][:-1], num_corr=df.iloc[i]["materia"][-1],
                             dia=df.iloc[i]["dia"]))
             else:
-                materia_objects.append(Materia(grado=grado, nombre=df.iloc[i]["materia"][:-1], dia=df.iloc[i]["dia"]))
+                materia_objects.append(Materia(grado=grade, nombre=df.iloc[i]["materia"][:-1], dia=df.iloc[i]["dia"]))
 
         materia_objects.sort(key=lambda materia: materia.num_corr)
         return materia_objects

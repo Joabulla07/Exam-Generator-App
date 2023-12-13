@@ -8,7 +8,7 @@ def convert_excel_to_dataframe():
     return df
 
 
-def convert_dataframe_lower_upper_accent(df):
+def convert_dataframe_lower_upper_accent(df: DataFrame):
     columns = df.columns.values.tolist()
     df.columns = [remove_accents(col) for col in [col.lower() for col in columns]]
     df.materia = [mat.lower() for mat in df.materia]
@@ -39,5 +39,5 @@ def sort_dataframe(df: DataFrame) -> DataFrame:
     return df.sort_values(by="materia")
 
 
-def remove_accents(text) -> str:
+def remove_accents(text: str) -> str:
     return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')

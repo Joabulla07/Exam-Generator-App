@@ -71,7 +71,7 @@ class DateForm(QWidget):
         layout.addWidget(self.generate_button)
         self.generate_button.clicked.connect(self.generate_period)
 
-    def validate_start_recess(self):
+    def validate_start_recess(self) -> None:
         start_date = self.start_date_edit_recess.text()
         buttom = self.generate_start_buttom_recess
         try:
@@ -81,7 +81,7 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid format")
 
-    def validate_end_recess(self):
+    def validate_end_recess(self) -> None:
         end_date = self.end_date_edit_recess.text()
         buttom = self.generate_end_buttom_recess
         try:
@@ -120,12 +120,10 @@ class DateForm(QWidget):
         except:
             QMessageBox.warning(self, "Error", "Invalid date")
 
-
     def import_excel(self) -> DataFrame | None:
         file_path, _ = QFileDialog.getOpenFileName(self, 'Importar Excel', ".", "Archivos Excel (*.xlsx *.xls)")
         if file_path:
             data = pd.read_excel(file_path)
-            # print(data)
             return data
         else:
             return None
