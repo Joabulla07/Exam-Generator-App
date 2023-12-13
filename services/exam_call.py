@@ -9,7 +9,7 @@ from utils.model.dataframe_utils import divide_dataframe_in_grade
 
 class ExamCall:
 
-    def __init__(self, df: DataFrame, period:dict):
+    def __init__(self, df: DataFrame, period: dict):
         self.df = df
         self.period = period
         self.grade_1 = divide_dataframe_in_grade(self.df)[0]
@@ -21,11 +21,17 @@ class ExamCall:
     def get_list_of_dates(self) -> list:
         start_date = datetime.strptime(self.period['start_date_first_period'], '%d/%m/%y')
         end_date = datetime.strptime(self.period['end_date_first_period'], '%d/%m/%y')
+        start_recess = datetime.strptime(self.period['start_recess_date'], '%d/%m/%y')
+        end_recess = datetime.strptime(self.period['end_recess_date'], '%d/%m/%y')
         date_list = [(start_date + timedelta(days=d)).strftime("%d/%m/%y")
                      for d in range((end_date - start_date).days + 1)]
+
+        date_recess_list = [(start_recess + timedelta(days=d)).strftime("%d/%m/%y")
+                            for d in range((end_recess - start_recess).days + 1)]
+
         definity_date_list = []
         for dates in date_list:
-            if validate_date_is_not_holiday_or_weekend(dates):
+            if validate_date_is_not_holiday_or_weekend(dates) and dates not in date_recess_list:
                 definity_date_list.append(dates)
         return definity_date_list
 
@@ -44,7 +50,9 @@ class ExamCall:
 
         for i in range(len(df)):
             if df.iloc[i]["materia"][-1].isnumeric():
-                materia_objects.append(Materia(grado=grado, nombre=df.iloc[i]["materia"][:-1], num_corr=df.iloc[i]["materia"][-1], dia=df.iloc[i]["dia"]))
+                materia_objects.append(
+                    Materia(grado=grado, nombre=df.iloc[i]["materia"][:-1], num_corr=df.iloc[i]["materia"][-1],
+                            dia=df.iloc[i]["dia"]))
             else:
                 materia_objects.append(Materia(grado=grado, nombre=df.iloc[i]["materia"][:-1], dia=df.iloc[i]["dia"]))
 
@@ -55,7 +63,7 @@ class ExamCall:
         first_year = self.create_materia_objects(1)
         dates = self.get_list_of_dates()
         copy_dates = dates.copy()
-        #schedule = dict(zip(dates, ["None"] * len(dates)))
+        # schedule = dict(zip(dates, ["None"] * len(dates)))
         # for materias in first_year:
         #     if materias.num_corr == "1":
         #         for dates_sch in schedule:
@@ -69,6 +77,3 @@ class ExamCall:
 
         for materias in first_year:
             pass
-
-
-
