@@ -27,7 +27,8 @@ def test_get_create_materia_objects(get_period, get_dataframe):
     result = [Materia(grado=1,
                      nombre="INGLES MEDICO ",
                      num_corr="1",
-                     dia="LUNES")].__repr__()
+                     dia_1="LUNES",
+                      dia_2="NONE")].__repr__()
 
     patch.object(Materia, "__init__", side_effect=result)
 
