@@ -34,22 +34,30 @@ class ExamCall:
 
         return df
 
-    def get_list_of_dates(self) -> list:
+    def get_list_of_dates(self) -> tuple:
         start_date = datetime.strptime(self.period['start_date_first_period'], '%d/%m/%y')
         end_date = datetime.strptime(self.period['end_date_first_period'], '%d/%m/%y')
-        start_recess = datetime.strptime(self.period['start_recess_date'], '%d/%m/%y')
-        end_recess = datetime.strptime(self.period['end_recess_date'], '%d/%m/%y')
-        date_list = [(start_date + timedelta(days=d)).strftime("%d/%m/%y")
+        start_second_period = datetime.strptime(self.period['start_date_second_period'], '%d/%m/%y')
+        end_second_period = datetime.strptime(self.period['end_date_second_period'], '%d/%m/%y')
+
+        date_list_first_period = [(start_date + timedelta(days=d)).strftime("%d/%m/%y")
                      for d in range((end_date - start_date).days + 1)]
 
-        date_recess_list = [(start_recess + timedelta(days=d)).strftime("%d/%m/%y")
-                            for d in range((end_recess - start_recess).days + 1)]
+        date_list_second_period = [(start_second_period + timedelta(days=d)).strftime("%d/%m/%y")
+                            for d in range((end_second_period - start_second_period).days + 1)]
 
-        definity_date_list = []
-        for dates in date_list:
-            if validate_date_is_not_holiday_or_weekend(dates) and dates not in date_recess_list:
-                definity_date_list.append(dates)
-        return definity_date_list
+        first_definity_date_list = []
+        second_definity_date_list = []
+
+        for dates in date_list_first_period:
+            if validate_date_is_not_holiday_or_weekend(dates):
+                first_definity_date_list.append(dates)
+
+        for dates in date_list_second_period:
+            if validate_date_is_not_holiday_or_weekend(dates):
+                second_definity_date_list.append(dates)
+
+        return first_definity_date_list, second_definity_date_list
 
     def create_materia_objects(self, grade: int) -> list:
         materia_objects = []
