@@ -52,9 +52,10 @@ class ExamCall:
             if df.iloc[i]["materia"][-1].isnumeric():
                 materia_objects.append(
                     Materia(grado=grade, nombre=df.iloc[i]["materia"][:-1], num_corr=df.iloc[i]["materia"][-1],
-                            dia=df.iloc[i]["dia"]))
+                            dia_1=df.iloc[i]["dia"], dia_2=df.iloc[i]["segundo_dia"]))
             else:
-                materia_objects.append(Materia(grado=grade, nombre=df.iloc[i]["materia"][:-1], dia=df.iloc[i]["dia"]))
+                materia_objects.append(Materia(grado=grade, nombre=df.iloc[i]["materia"][:-1], dia_1=df.iloc[i]["dia"]
+                                               , dia_2=df.iloc[i]["segundo_dia"]))
 
         materia_objects.sort(key=lambda materia: materia.num_corr)
         return materia_objects
