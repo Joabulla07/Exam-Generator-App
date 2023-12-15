@@ -28,5 +28,5 @@ def get_dataframe():
             "MATERIA": ["Inglés Médico 1", "Química Biolóica 1", "Evaluaciones Kinefisiatricas",
                         "Técnicas Kinésicas 1", "Kinesiología Deportiva", "Práctica Clínica Guiada 1"],
             "DIA": ["lunes", "martes", "miércoles", "jueves", "viernes", "lunes"],
-            "SEGUNDO_DIA" : ["None", "jueves", "viernes", "lunes", "None", "None"]}
+            "SEGUNDO_DIA": ["None", "jueves", "viernes", "lunes", "None", "None"]}
     return pd.DataFrame(data)
