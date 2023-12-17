@@ -23,3 +23,10 @@ def add_days(date: str, days: int) -> str:
     date_add = date_converted + timedelta(days=days)
 
     return date_add.strftime("%d/%m/%y")
+
+
+def add_days_return_datetime(date: str, days: int) -> datetime:
+    date_converted = datetime.strptime(date, '%d/%m/%y')
+    date_add = date_converted + timedelta(days=days)
+
+    return date_add
