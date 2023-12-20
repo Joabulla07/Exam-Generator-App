@@ -7,14 +7,14 @@ from pandas import DataFrame
 
 from model.materia import Materia
 from utils.common.validation_utils import validate_date_is_not_holiday_or_weekend
-from utils.model.dataframe_utils import divide_dataframe_in_grade
+from utils.model.dataframe_utils import divide_dataframe_in_grade, remove_accents
 from utils.common.util import *
 
 
 class ExamCall:
     resultado = pd.DataFrame(columns=['grado', 'materia', 'correlativa num', 'primer llamado', 'segundo llamado'])
 
-    def __init__(self, df: DataFrame, period: dict):
+    def __init__(self, df: DataFrame, period: dict, name_career: str):
         self.df = df
         self.period = period
         self.grade_1 = divide_dataframe_in_grade(self.df)[0]
@@ -22,6 +22,7 @@ class ExamCall:
         self.grade_3 = divide_dataframe_in_grade(self.df)[2]
         self.grade_4 = divide_dataframe_in_grade(self.df)[3]
         self.grade_5 = divide_dataframe_in_grade(self.df)[4]
+        self.name_career = name_career
 
     def get_df_from_grade(self, grade):
         if grade == 1:
@@ -179,8 +180,6 @@ class ExamCall:
 
                 if fecha_asignada:
                     self.resultado.loc[(self.resultado["materia"] == materia.nombre) & (self.resultado["correlativa num"] == correlativa), "segundo llamado"] = fecha_asignada
-
-
                     materias.remove(materia)
                     valid_dates.remove(fecha_asignada)
 
@@ -188,3 +187,18 @@ class ExamCall:
         empty_dates = valid_dates
         return self.resultado, materias_without_date, empty_dates
 
+
+
+    def create_first_call_third_year(self, grade):
+        materias_assign = self.create_materia_objects(grade)
+        materias = materias_assign.copy()
+        dates = self.get_list_of_dates()[0]
+        valid_dates = dates.copy()
+
+        first_call_second_year = self.create_first_call_period_first_and_second_year(2)[0]
+
+        # ToDo: sacar fecha que tiene la tecnica kinesica 2
+
+        while len(materias) > 0 and len(valid_dates) > 0:
+            for materia in materias:
+                pass
