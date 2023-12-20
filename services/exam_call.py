@@ -7,7 +7,7 @@ from pandas import DataFrame
 
 from model.materia import Materia
 from utils.common.validation_utils import validate_date_is_not_holiday_or_weekend
-from utils.model.dataframe_utils import divide_dataframe_in_grade
+from utils.model.dataframe_utils import divide_dataframe_in_grade, remove_accents
 from utils.common.util import *
 
 
@@ -22,6 +22,19 @@ class ExamCall:
         self.grade_3 = divide_dataframe_in_grade(self.df)[2]
         self.grade_4 = divide_dataframe_in_grade(self.df)[3]
         self.grade_5 = divide_dataframe_in_grade(self.df)[4]
+        self.career_name = self.period["career_name"]
+
+    def get_name_career(self) -> str:
+        career_name = None
+        name = remove_accents(self.career_name).lower()
+        if name.startswith("kin"):
+            career_name = "kinesiologia"
+        return career_name
+
+    def get_central_subject_of_career(self):
+        career_name = self.get_name_career()
+        if career_name == "kinesiologia":
+            return "TECNICAS KINESICAS"
 
     def get_df_from_grade(self, grade):
         if grade == 1:
