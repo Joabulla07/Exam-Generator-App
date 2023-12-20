@@ -14,7 +14,7 @@ from utils.common.util import *
 class ExamCall:
     resultado = pd.DataFrame(columns=['grado', 'materia', 'correlativa num', 'primer llamado', 'segundo llamado'])
 
-    def __init__(self, df: DataFrame, period: dict, name_career: str):
+    def __init__(self, df: DataFrame, period: dict):
         self.df = df
         self.period = period
         self.grade_1 = divide_dataframe_in_grade(self.df)[0]
@@ -22,7 +22,19 @@ class ExamCall:
         self.grade_3 = divide_dataframe_in_grade(self.df)[2]
         self.grade_4 = divide_dataframe_in_grade(self.df)[3]
         self.grade_5 = divide_dataframe_in_grade(self.df)[4]
-        self.name_career = name_career
+        self.career_name = self.period["career_name"]
+
+    def get_name_career(self) -> str:
+        career_name = None
+        name = remove_accents(self.career_name).lower()
+        if name.startswith("kin"):
+            career_name = "kinesiologia"
+        return career_name
+
+    def get_central_subject_of_career(self):
+        career_name = self.get_name_career()
+        if career_name == "kinesiologia":
+            return "TECNICAS KINESICAS"
 
     def get_df_from_grade(self, grade):
         if grade == 1:

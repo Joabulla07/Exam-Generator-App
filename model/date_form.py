@@ -24,6 +24,10 @@ class DateForm(QWidget):
         self.end_date_edit_fist_call = QLineEdit(self)
         self.start_date_edit_second_call = QLineEdit(self)
         self.end_date_edit_second_call = QLineEdit(self)
+        self.career_name = QLineEdit()
+
+        # CAREER NAME
+        layout.addRow(QLabel("Ingrese el nombre de la carrera:"), self.career_name)
 
         # FIRST CALL
         self.title_first = QLabel("PRIMER LLAMADO", self)
@@ -145,13 +149,15 @@ class DateForm(QWidget):
         end_date_first_period = self.end_date_edit_fist_call.text()
         start_date_second_period = self.start_date_edit_second_call.text()
         end_date_second_period = self.end_date_edit_second_call.text()
+        career_name = self.career_name.text()
         if (((self.validate_date_one_for_first_period() and self.validate_date_one_for_second_period()
               and self.validate_date_two_first_period() and self.validate_date_two_second_period()))):
             df = self.import_excel()
             period = {"start_date_first_period": start_date_first_period,
                       "end_date_first_period": end_date_first_period,
                       "start_date_second_period": start_date_second_period,
-                      "end_date_second_period": end_date_second_period, }
+                      "end_date_second_period": end_date_second_period,
+                      "career_name": career_name}
             print(period)
 
             # ToDo: funcion general mesas aca dentro y descargue un csv o exel con los datos

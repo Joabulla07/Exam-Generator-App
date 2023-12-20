@@ -23,8 +23,9 @@ Execute tests with coverage using
 ## 📋  Instructions for users 
 
 1. Excel columns must have the names:
-   1."grado" and "materia"
-2. The subject must have numbers instead of roman numbers.
+   1."grado", "materia" , "dia" and "segundo dia"
+   2. "dia" are for preference day of the week. and "segundo dia" is for the second preference day.
+3. The subject must have numbers instead of roman numbers.
    1. Example: "Tècnica 1", "Tècnica 2"
 
     
