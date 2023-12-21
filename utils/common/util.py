@@ -30,7 +30,3 @@ def add_days_return_datetime(date: str, days: int) -> datetime:
     date_add = date_converted + timedelta(days=days)
 
     return date_add
-
-
-def get_filters_for_create_call_third_and_next_years():
-    pass
