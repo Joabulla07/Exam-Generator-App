@@ -12,6 +12,7 @@ from utils.common.util import *
 
 
 class ExamCall:
+
     resultado = pd.DataFrame(columns=['grado', 'materia', 'correlativa num', 'primer llamado', 'segundo llamado'])
 
     def __init__(self, df: DataFrame, period: dict):
@@ -148,73 +149,74 @@ class ExamCall:
         empty_dates = valid_dates
         return self.resultado, materias_without_date, empty_dates
 
-    def create_second_call_period_first_and_second_year(self, grade):
-        first_period, materias_without_date, empty_dates = self.create_first_call_period_first_and_second_year(grade)
-        dates = self.get_list_of_dates()[1]
-        [dates.append(date) for date in empty_dates]
-        dates.sort(key=lambda date: datetime.strptime(date, '%d/%m/%y'), reverse=False)
-        valid_dates = dates.copy()
-
-        materias_assign = self.create_materia_objects(grade)
-        materias = materias_assign.copy()
-        count = 0
-
-        while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
-            count = count + 1
-            for materia in materias:
-                correlativa = materia.num_corr
-
-                fecha_asignada = None
-
-                for fecha in valid_dates:
-                    if get_day_of_the_week(fecha) in (materia.dia_1, materia.dia_2):
-                        get_fila = self.resultado.loc[self.resultado["materia"].values == materia.nombre]
-                        if len(get_fila) > 1:
-                            get_fila = get_fila.loc[self.resultado["correlativa num"] == correlativa]
-                        if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
-                                get_fila["primer llamado"].values[0], 7):
-                            if (correlativa in ("0", "1") or
-                                    len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
-                                if fecha_asignada is None or fecha < fecha_asignada:
-                                    fecha_asignada = fecha
-                                    break
-                            else:
-                                get_fila = self.resultado.loc[self.resultado["materia"].values == materia.nombre]
-                                if type(get_fila["segundo llamado"].values[0]) == str and pd.to_numeric(
-                                        get_fila["correlativa num"].values[0]) < int(materia.num_corr):
-                                    if fecha_asignada is None:
-                                        if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
-                                                get_fila["segundo llamado"].values[0], 5):
-                                            fecha_asignada = fecha
-                                            break
-                                        else:
-                                            continue
-                                else:
-                                    continue
-                        else:
-                            continue
-
-                if fecha_asignada:
-                    self.resultado.loc[(self.resultado["materia"] == materia.nombre) & (
-                            self.resultado["correlativa num"] == correlativa), "segundo llamado"] = fecha_asignada
-                    materias.remove(materia)
-                    valid_dates.remove(fecha_asignada)
-                    break
-
-        materias_without_date = materias
-        empty_dates = valid_dates
-        return self.resultado, materias_without_date, empty_dates
+    # def create_second_call_period_first_and_second_year(self, grade):
+    #     first_period, materias_without_date, empty_dates = self.create_first_call_period_first_and_second_year(grade)
+    #     dates = self.get_list_of_dates()[1]
+    #     [dates.append(date) for date in empty_dates]
+    #     dates.sort(key=lambda date: datetime.strptime(date, '%d/%m/%y'), reverse=False)
+    #     valid_dates = dates.copy()
+    #
+    #     materias_assign = self.create_materia_objects(grade)
+    #     materias = materias_assign.copy()
+    #     count = 0
+    #
+    #     while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
+    #         count = count + 1
+    #         for materia in materias:
+    #             correlativa = materia.num_corr
+    #
+    #             fecha_asignada = None
+    #
+    #             for fecha in valid_dates:
+    #                 if get_day_of_the_week(fecha) in (materia.dia_1, materia.dia_2):
+    #                     get_fila = self.resultado.loc[self.resultado["materia"].values == materia.nombre]
+    #                     if len(get_fila) > 1:
+    #                         get_fila = get_fila.loc[self.resultado["correlativa num"] == correlativa]
+    #                     if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
+    #                             get_fila["primer llamado"].values[0], 7):
+    #                         if (correlativa in ("0", "1") or
+    #                                 len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
+    #                             if fecha_asignada is None or fecha < fecha_asignada:
+    #                                 fecha_asignada = fecha
+    #                                 break
+    #                         else:
+    #                             get_fila = self.resultado.loc[self.resultado["materia"].values == materia.nombre]
+    #                             if type(get_fila["segundo llamado"].values[0]) == str and pd.to_numeric(
+    #                                     get_fila["correlativa num"].values[0]) < int(materia.num_corr):
+    #                                 if fecha_asignada is None:
+    #                                     if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
+    #                                             get_fila["segundo llamado"].values[0], 5):
+    #                                         fecha_asignada = fecha
+    #                                         break
+    #                                     else:
+    #                                         continue
+    #                             else:
+    #                                 continue
+    #                     else:
+    #                         continue
+    #
+    #             if fecha_asignada:
+    #                 self.resultado.loc[(self.resultado["materia"] == materia.nombre) & (
+    #                         self.resultado["correlativa num"] == correlativa), "segundo llamado"] = fecha_asignada
+    #                 materias.remove(materia)
+    #                 valid_dates.remove(fecha_asignada)
+    #                 break
+    #
+    #     materias_without_date = materias
+    #     empty_dates = valid_dates
+    #     return self.resultado, materias_without_date, empty_dates
 
     def create_first_call_third_year(self, grade):
         materias = self.create_materia_objects(grade)
         dates = self.get_list_of_dates()[0]
         valid_dates = dates.copy()
-        print(materias)
+
         first_call_second_year = self.create_first_call_period_first_and_second_year(2)[0]
         central_materia = self.get_central_subject_of_career()
         get_fila = first_call_second_year.loc[first_call_second_year["materia"].values == central_materia]
         get_last_call_materia = get_fila.sort_values(by=["correlativa num"], ascending=False)
         last_date_materia = get_last_call_materia["primer llamado"].values[0]
+
         self.resultado.drop(self.resultado.index[0:], inplace=True)
         count = 0
 
@@ -256,7 +258,7 @@ class ExamCall:
                                 else:
                                     fecha_posible = fecha
                                     while fecha_posible < last_date_materia or fecha_posible not in valid_dates or get_day_of_the_week(
-                                                        fecha_posible) not in (materia.dia_1, materia.dia_2):
+                                            fecha_posible) not in (materia.dia_1, materia.dia_2):
                                         fecha_posible = add_days(fecha_posible, 1)
                                     fecha_asignada = fecha_posible
                                     break
@@ -274,7 +276,83 @@ class ExamCall:
                     valid_dates.remove(fecha_asignada)
                     break
 
+        materias_without_date = materias
+        empty_dates = valid_dates
 
+        central_materia = self.get_central_subject_of_career()
+        get_fila = self.resultado.loc[self.resultado["materia"].values == central_materia]
+        get_last_call_materia = get_fila.sort_values(by=["correlativa num"], ascending=False)
+        last_date_materia = get_last_call_materia["primer llamado"].values[0]
+
+        return self.resultado, materias_without_date, empty_dates, last_date_materia
+
+    def create_first_call_fourth_year(self, grade):
+        materias = self.create_materia_objects(grade)
+        dates = self.get_list_of_dates()[0]
+        valid_dates = dates.copy()
+
+        central_materia = self.get_central_subject_of_career()
+        # ToDo: tratar de unificar y no crear tntas veces
+        last_date_materia = self.create_first_call_third_year(3)[3]
+
+        self.resultado.drop(self.resultado.index[0:], inplace=True)
+        count = 0
+
+        while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
+            count = count + 1
+            for materia in materias:
+                correlativa = materia.num_corr
+
+                fecha_asignada = None
+
+                for fecha in valid_dates:
+                    if get_day_of_the_week(fecha) == materia.dia_1:
+                        if fecha not in self.resultado['primer llamado'].values:
+                            if (correlativa in ("0", "1") or
+                                    len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
+                                if fecha_asignada is None or fecha < fecha_asignada:
+                                    fecha_asignada = fecha
+                                    break
+                            elif materia.nombre in self.resultado["materia"].values:
+                                get_fila = self.resultado.loc[self.resultado["materia"].values == materia.nombre]
+                                if pd.to_numeric(get_fila["correlativa num"].values[0]) < int(materia.num_corr):
+                                    if fecha_asignada is None:
+                                        fecha_posible = add_days(str(get_fila["primer llamado"].values[0]), 5)
+                                        if fecha_posible in valid_dates and get_day_of_the_week(fecha_posible) in (
+                                                materia.dia_1, materia.dia_2):
+                                            fecha_asignada = fecha_posible
+                                            break
+                                        else:
+                                            while (fecha_posible in self.resultado['primer llamado'].values
+                                                   or fecha_posible not in valid_dates or get_day_of_the_week(
+                                                        fecha_posible) != materia.dia_1):
+                                                fecha_posible = add_days(fecha_posible, 1)
+                                            fecha_asignada = fecha_posible
+                                            break
+                            elif materia.nombre == central_materia:
+                                if fecha > last_date_materia:
+                                    fecha_asignada = fecha
+                                    break
+                                else:
+                                    fecha_posible = fecha
+                                    while fecha_posible < last_date_materia or fecha_posible not in valid_dates or get_day_of_the_week(
+                                            fecha_posible) not in (materia.dia_1, materia.dia_2):
+                                        fecha_posible = add_days(fecha_posible, 1)
+                                    fecha_asignada = fecha_posible
+                                    break
+                        else:
+                            continue
+                    else:
+                        continue
+
+                if fecha_asignada:
+                    self.resultado = self.resultado._append(
+                        {'grado': materia.grado, 'materia': materia.nombre, 'correlativa num': materia.num_corr,
+                         'primer llamado': fecha_asignada}, ignore_index=True)
+
+                    materias.remove(materia)
+                    valid_dates.remove(fecha_asignada)
+                    break
 
         materias_without_date = materias
         empty_dates = valid_dates
