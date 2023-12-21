@@ -158,9 +158,8 @@ class DateForm(QWidget):
                       "start_date_second_period": start_date_second_period,
                       "end_date_second_period": end_date_second_period,
                       "career_name": career_name}
-            print(period)
 
-            # ToDo: funcion general mesas aca dentro y descargue un csv o exel con los datos
+            call = ExamCall(df, period)
+            generate_calls = call.create_first_call()
 
-            # call = ExamCall(df, period)
-            # first_year_call = call.create_first_year_call_first_period()
+            # Todo: crear conversion de csv o excel de cada mesa y descargar
