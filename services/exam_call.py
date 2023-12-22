@@ -44,12 +44,16 @@ class ExamCall:
         name = remove_accents(self.career_name).lower()
         if name.startswith("kin"):
             career_name = "kinesiologia"
+        elif name.startswith("nutri"):
+            career_name = "nutricion"
         return career_name
 
-    def get_central_subject_of_career(self):
+    def get_central_subject_of_career(self) -> str | None:
         career_name = self.get_name_career()
         if career_name == "kinesiologia":
             return "TECNICAS KINESICAS "
+        else:
+            return None
 
     def get_df_from_grade(self, grade):
         if grade == 1:
@@ -159,6 +163,14 @@ class ExamCall:
 
     def get_third_and_fourth_year_filters_first_call(self, materias, valid_dates, central_materia,
                                                      last_date_materia) -> tuple:
+        """
+        only for kinesiologia
+        :param materias: list of object Materia
+        :param valid_dates: list of string
+        :param central_materia: str
+        :param last_date_materia:
+        :return: tuple
+        """
         count = 0
         result = pd.DataFrame(columns=['grado', 'materia', 'correlativa num', 'primer llamado', 'segundo llamado'])
         while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
@@ -244,27 +256,39 @@ class ExamCall:
             elif grade == 3:
                 dates = self.get_list_of_dates()[0]
                 materias_assign = self.create_materia_objects(3)
-                get_fila = self.second_year_result.loc[self.second_year_result["materia"].values == central_materia]
-                get_last_call_materia = get_fila.sort_values(by=["correlativa num"], ascending=False)
-                last_date_materia = get_last_call_materia["primer llamado"].values[0]
-                materias_without_date, empty_dates, self.third_year_result = self.get_third_and_fourth_year_filters_first_call(
-                    materias=materias_assign,
-                    valid_dates=dates,
-                    central_materia=central_materia,
-                    last_date_materia=last_date_materia)
-                self.third_year = self.third_year_result, materias_without_date, empty_dates
+                if self.get_name_career() == "nutricion":
+                    materias_without_date, empty_dates, self.third_year_result = self.get_first_and_second_year_filters_first_call(
+                        materias=materias_assign,
+                        valid_dates=dates)
+                    self.third_year = self.third_year_result, materias_without_date, empty_dates
+                else:
+                    get_fila = self.second_year_result.loc[self.second_year_result["materia"].values == central_materia]
+                    get_last_call_materia = get_fila.sort_values(by=["correlativa num"], ascending=False)
+                    last_date_materia = get_last_call_materia["primer llamado"].values[0]
+                    materias_without_date, empty_dates, self.third_year_result = self.get_third_and_fourth_year_filters_first_call(
+                        materias=materias_assign,
+                        valid_dates=dates,
+                        central_materia=central_materia,
+                        last_date_materia=last_date_materia)
+                    self.third_year = self.third_year_result, materias_without_date, empty_dates
             elif grade == 4:
                 dates = self.get_list_of_dates()[0]
                 materias_assign = self.create_materia_objects(4)
-                get_fila = self.third_year_result.loc[self.third_year_result["materia"].values == central_materia]
-                get_last_call_materia = get_fila.sort_values(by=["correlativa num"], ascending=False)
-                last_date_materia = get_last_call_materia["primer llamado"].values[0]
-                materias_without_date, empty_dates, self.fourth_year_result = self.get_third_and_fourth_year_filters_first_call(
-                    materias=materias_assign,
-                    valid_dates=dates,
-                    central_materia=central_materia,
-                    last_date_materia=last_date_materia)
-                self.fourth_year = self.fourth_year_result, materias_without_date, empty_dates
+                if self.get_name_career() == "nutricion":
+                    materias_without_date, empty_dates, self.fourth_year_result = self.get_first_and_second_year_filters_first_call(
+                        materias=materias_assign,
+                        valid_dates=dates)
+                    self.fourth_year = self.fourth_year_result, materias_without_date, empty_dates
+                else:
+                    get_fila = self.third_year_result.loc[self.third_year_result["materia"].values == central_materia]
+                    get_last_call_materia = get_fila.sort_values(by=["correlativa num"], ascending=False)
+                    last_date_materia = get_last_call_materia["primer llamado"].values[0]
+                    materias_without_date, empty_dates, self.fourth_year_result = self.get_third_and_fourth_year_filters_first_call(
+                        materias=materias_assign,
+                        valid_dates=dates,
+                        central_materia=central_materia,
+                        last_date_materia=last_date_materia)
+                    self.fourth_year = self.fourth_year_result, materias_without_date, empty_dates
             elif grade == 5:
                 dates = self.get_list_of_dates()[0]
                 materias_assign = self.create_materia_objects(5)
