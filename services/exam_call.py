@@ -224,9 +224,9 @@ class ExamCall:
 
         return materias, valid_dates, result
 
-    def create_first_call(self) -> tuple[tuple, tuple, tuple, tuple]:
+    def create_first_call(self) -> tuple[tuple, tuple, tuple, tuple, tuple]:
         central_materia = self.get_central_subject_of_career()
-        for grade in range(1, 5):
+        for grade in range(1, 6):
             if grade == 1:
                 dates = self.get_list_of_dates()[0]
                 materias_assign = self.create_materia_objects(1)
@@ -265,8 +265,15 @@ class ExamCall:
                     central_materia=central_materia,
                     last_date_materia=last_date_materia)
                 self.fourth_year = self.fourth_year_result, materias_without_date, empty_dates
+            elif grade == 5:
+                dates = self.get_list_of_dates()[0]
+                materias_assign = self.create_materia_objects(5)
+                materias_without_date, empty_dates, self.fifth_year_result = self.get_first_and_second_year_filters_first_call(
+                    materias=materias_assign,
+                    valid_dates=dates)
+                self.fifth_year = self.fifth_year_result, materias_without_date, empty_dates
 
-        return self.first_year, self.second_year, self.third_year, self.fourth_year
+        return self.first_year, self.second_year, self.third_year, self.fourth_year, self.fifth_year
 
     # def create_second_call_period_first_and_second_year(self, grade):
     #     first_period, materias_without_date, empty_dates = self.create_first_call_period_first_and_second_year(grade)
