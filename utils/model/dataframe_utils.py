@@ -5,8 +5,9 @@ from pandas import DataFrame
 
 
 def convert_excel_to_dataframe():
-    df = pd.read_excel("../docs/materias.xlsx")
-    return df
+    df = pd.read_excel("../docs/kinesiologia.xlsx")
+    df_2 = pd.read_excel("../docs/nutricion.xlsx")
+    return df, df_2
 
 
 def convert_dataframe_lower_upper_accent(df: DataFrame):
@@ -20,7 +21,7 @@ def convert_dataframe_lower_upper_accent(df: DataFrame):
     df.dia = [d.upper() for d in df.dia]
 
     for dias in df.segundo_dia:
-        if dias in ('', ' ', 'nan', np.nan):
+        if dias in ('', ' ', 'nan', np.nan) or type(dias) == float:
             df.segundo_dia = "None"
 
     df.segundo_dia = [d.lower() for d in df.segundo_dia]
@@ -37,7 +38,7 @@ def divide_dataframe_in_grade(df: DataFrame) -> tuple:
     grade_3 = groups.get_group(3)
     grade_4 = groups.get_group(4)
     grade_5 = groups.get_group(5)
-    return grade_1, grade_2, grade_3,grade_4, grade_5
+    return grade_1, grade_2, grade_3, grade_4, grade_5
 
 
 def sort_dataframe(df: DataFrame) -> DataFrame:
