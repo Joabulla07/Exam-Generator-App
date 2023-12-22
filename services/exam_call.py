@@ -183,8 +183,7 @@ class ExamCall:
                 for fecha in valid_dates:
                     if get_day_of_the_week(fecha) == materia.dia_1:
                         if fecha not in result['primer llamado'].values:
-                            if (correlativa in ("0", "1") or
-                                    len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
+                            if correlativa in ("0", "1", "3", "5", "7") and materia.nombre != central_materia:
                                 if fecha_asignada is None or fecha < fecha_asignada:
                                     fecha_asignada = fecha
                                     break
@@ -299,7 +298,7 @@ class ExamCall:
 
         return self.first_year, self.second_year, self.third_year, self.fourth_year, self.fifth_year
 
-    def get_second_call(self, materias, valid_dates, year_result):
+    def get_second_call(self, materias, valid_dates, year_result, central_materia=None):
         count = 0
 
         while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
@@ -314,17 +313,18 @@ class ExamCall:
                         get_fila = year_result.loc[year_result["materia"].values == materia.nombre]
                         if len(get_fila) > 1:
                             get_fila = get_fila.loc[year_result["correlativa num"] == correlativa]
+                        if len(get_fila["primer llamado"].values) < 1:
+                            break
                         if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
                                 get_fila["primer llamado"].values[0], 7):
-                            if (correlativa in ("0", "1") or
-                                    len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
+                            if correlativa in ("0", "1", "3", "5", "7") and materia.nombre != central_materia:
                                 if fecha_asignada is None or fecha < fecha_asignada:
                                     fecha_asignada = fecha
                                     break
                             else:
                                 get_fila = year_result.loc[year_result["materia"].values == materia.nombre]
-                                if type(get_fila["segundo llamado"].values[0]) == str and pd.to_numeric(
-                                        get_fila["correlativa num"].values[0]) < int(materia.num_corr):
+                                if (type(get_fila["segundo llamado"].values[0]) == str and pd.to_numeric(
+                                        get_fila["correlativa num"].values[0]) < int(materia.num_corr)):
                                     if fecha_asignada is None:
                                         if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
                                                 get_fila["segundo llamado"].values[0], 5):
@@ -350,6 +350,7 @@ class ExamCall:
 
     def create_second_call(self):
         self.create_first_call()
+        central_materia = self.get_central_subject_of_career()
         for grade in range(1, 6):
             if grade == 1:
                 empty_dates = self.first_year[2]
@@ -382,7 +383,8 @@ class ExamCall:
                 materias_without_date, empty_dates, self.third_year_result = self.get_second_call(
                     materias=materias_assign,
                     valid_dates=dates,
-                    year_result=self.third_year_result)
+                    year_result=self.third_year_result,
+                    central_materia=central_materia)
                 self.third_year = self.third_year_result, materias_without_date, empty_dates
             elif grade == 4:
                 empty_dates = self.fourth_year[2]
@@ -393,9 +395,10 @@ class ExamCall:
                 materias_without_date, empty_dates, self.fourth_year_result = self.get_second_call(
                     materias=materias_assign,
                     valid_dates=dates,
-                    year_result=self.fourth_year_result)
+                    year_result=self.fourth_year_result,
+                    central_materia=central_materia)
                 self.fourth_year = self.fourth_year_result, materias_without_date, empty_dates
-            elif grade == 5:
+            if grade == 5:
                 empty_dates = self.fifth_year[2]
                 dates = self.get_list_of_dates()[1]
                 [dates.append(date) for date in empty_dates]
@@ -404,6 +407,7 @@ class ExamCall:
                 materias_without_date, empty_dates, self.fifth_year_result = self.get_second_call(
                     materias=materias_assign,
                     valid_dates=dates,
-                    year_result=self.fifth_year_result)
+                    year_result=self.fifth_year_result,
+                    central_materia=central_materia)
                 self.fifth_year = self.fifth_year_result, materias_without_date, empty_dates
         return self.first_year, self.second_year, self.third_year, self.fourth_year, self.fifth_year
