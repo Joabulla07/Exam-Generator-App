@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from typing import Tuple, List, Any
 
@@ -22,12 +23,6 @@ class ExamCall:
         columns=['grado', 'materia', 'correlativa num', 'primer llamado', 'segundo llamado'])
     fifth_year_result = pd.DataFrame(
         columns=['grado', 'materia', 'correlativa num', 'primer llamado', 'segundo llamado'])
-
-    first_year: tuple
-    second_year: tuple
-    third_year: tuple
-    fourth_year: tuple
-    fifth_year: tuple
 
     def __init__(self, df: DataFrame, period: dict):
         self.df = df
@@ -303,7 +298,7 @@ class ExamCall:
                         valid_dates=dates,
                         central_materia=central_materia,
                         last_date_materia=last_date_materia)
-                    self.fourth_year = self.fourth_year_result,empty_dates
+                    self.fourth_year = self.fourth_year_result, empty_dates
             elif grade == 5:
                 dates = self.get_list_of_dates()[0]
                 materias_assign = self.create_materia_objects(5)
@@ -368,10 +363,13 @@ class ExamCall:
                 materias.remove(materia)
                 break
 
-        empty_dates = valid_dates
-        return empty_dates, year_result
+        year_result = year_result._append(
+            {'grado': "", 'materia': valid_dates, 'correlativa num': "",
+             'primer llamado': ""}, ignore_index=True)
 
-    def create_second_call(self) -> tuple:
+        return valid_dates, year_result
+
+    def create_second_call(self):
         self.create_first_call()
         central_materia = self.get_central_subject_of_career()
         for grade in range(1, 6):
@@ -385,7 +383,7 @@ class ExamCall:
                     materias=materias_assign,
                     valid_dates=dates,
                     year_result=self.first_year_result)
-                self.first_year = self.first_year_result, empty_dates
+
             elif grade == 2:
                 empty_dates = self.second_year[1]
                 dates = self.get_list_of_dates()[1]
@@ -396,7 +394,7 @@ class ExamCall:
                     materias=materias_assign,
                     valid_dates=dates,
                     year_result=self.second_year_result)
-                self.second_year = self.second_year_result, empty_dates
+
             if grade == 3:
                 empty_dates = self.third_year[1]
                 dates = self.get_list_of_dates()[1]
@@ -408,7 +406,7 @@ class ExamCall:
                     valid_dates=dates,
                     year_result=self.third_year_result,
                     central_materia=central_materia)
-                self.third_year = self.third_year_result, empty_dates
+
             elif grade == 4:
                 empty_dates = self.fourth_year[1]
                 dates = self.get_list_of_dates()[1]
@@ -420,7 +418,7 @@ class ExamCall:
                     valid_dates=dates,
                     year_result=self.fourth_year_result,
                     central_materia=central_materia)
-                self.fourth_year = self.fourth_year_result, empty_dates
+
             if grade == 5:
                 empty_dates = self.fifth_year[1]
                 dates = self.get_list_of_dates()[1]
@@ -432,5 +430,12 @@ class ExamCall:
                     valid_dates=dates,
                     year_result=self.fifth_year_result,
                     central_materia=central_materia)
-                self.fifth_year = self.fifth_year_result, empty_dates
-        return self.first_year, self.second_year, self.third_year, self.fourth_year, self.fifth_year
+
+    def get_output(self):
+        path_desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+        self.create_second_call()
+        self.first_year_result.to_excel(f"{path_desktop}/mesas_primer_año.xlsx")
+        self.second_year_result.to_excel(f"{path_desktop}/mesas_segundo_año.xlsx")
+        self.third_year_result.to_excel(f"{path_desktop}/mesas_tercer_año.xlsx")
+        self.fourth_year_result.to_excel(f"{path_desktop}/mesas_cuarto_año.xlsx")
+        self.fifth_year_result.to_excel(f"{path_desktop}/mesas_quinto_año.xlsx")
