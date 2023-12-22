@@ -299,7 +299,119 @@ class ExamCall:
 
         return self.first_year, self.second_year, self.third_year, self.fourth_year, self.fifth_year
 
-    # def create_second_call_period_first_and_second_year(self, grade):
+    def get_second_call(self, materias, valid_dates, year_result):
+        count = 0
+
+        while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
+            count = count + 1
+            for materia in materias:
+                correlativa = materia.num_corr
+
+                fecha_asignada = None
+
+                for fecha in valid_dates:
+                    if get_day_of_the_week(fecha) in (materia.dia_1, materia.dia_2):
+                        get_fila = year_result.loc[year_result["materia"].values == materia.nombre]
+                        if len(get_fila) > 1:
+                            get_fila = get_fila.loc[year_result["correlativa num"] == correlativa]
+                        if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
+                                get_fila["primer llamado"].values[0], 7):
+                            if (correlativa in ("0", "1") or
+                                    len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
+                                if fecha_asignada is None or fecha < fecha_asignada:
+                                    fecha_asignada = fecha
+                                    break
+                            else:
+                                get_fila = year_result.loc[year_result["materia"].values == materia.nombre]
+                                if type(get_fila["segundo llamado"].values[0]) == str and pd.to_numeric(
+                                        get_fila["correlativa num"].values[0]) < int(materia.num_corr):
+                                    if fecha_asignada is None:
+                                        if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
+                                                get_fila["segundo llamado"].values[0], 5):
+                                            fecha_asignada = fecha
+                                            break
+                                        else:
+                                            continue
+                                else:
+                                    continue
+                        else:
+                            continue
+
+                if fecha_asignada:
+                    year_result.loc[(year_result["materia"] == materia.nombre) & (
+                            year_result["correlativa num"] == correlativa), "segundo llamado"] = fecha_asignada
+                    materias.remove(materia)
+                    valid_dates.remove(fecha_asignada)
+                    break
+
+        materias_without_date = materias
+        empty_dates = valid_dates
+        return materias_without_date, empty_dates, year_result
+
+    def create_second_call(self):
+        self.create_first_call()
+        for grade in range(1, 6):
+            if grade == 1:
+                empty_dates = self.first_year[2]
+                dates = self.get_list_of_dates()[1]
+                [dates.append(date) for date in empty_dates]
+                dates.sort(key=lambda date: datetime.strptime(date, '%d/%m/%y'), reverse=False)
+                materias_assign = self.create_materia_objects(1)
+                materias_without_date, empty_dates, self.first_year_result = self.get_second_call(
+                    materias=materias_assign,
+                    valid_dates=dates,
+                    year_result=self.first_year_result)
+                self.first_year = self.first_year_result, materias_without_date, empty_dates
+            elif grade == 2:
+                empty_dates = self.second_year[2]
+                dates = self.get_list_of_dates()[1]
+                [dates.append(date) for date in empty_dates]
+                dates.sort(key=lambda date: datetime.strptime(date, '%d/%m/%y'), reverse=False)
+                materias_assign = self.create_materia_objects(2)
+                materias_without_date, empty_dates, self.second_year_result = self.get_second_call(
+                    materias=materias_assign,
+                    valid_dates=dates,
+                    year_result=self.second_year_result)
+                self.second_year = self.second_year_result, materias_without_date, empty_dates
+            elif grade == 3:
+                empty_dates = self.third_year[2]
+                dates = self.get_list_of_dates()[1]
+                [dates.append(date) for date in empty_dates]
+                dates.sort(key=lambda date: datetime.strptime(date, '%d/%m/%y'), reverse=False)
+                materias_assign = self.create_materia_objects(3)
+                materias_without_date, empty_dates, self.third_year_result = self.get_second_call(
+                    materias=materias_assign,
+                    valid_dates=dates,
+                    year_result=self.third_year_result)
+                self.third_year = self.third_year_result, materias_without_date, empty_dates
+            elif grade == 4:
+                empty_dates = self.fourth_year[2]
+                dates = self.get_list_of_dates()[1]
+                [dates.append(date) for date in empty_dates]
+                dates.sort(key=lambda date: datetime.strptime(date, '%d/%m/%y'), reverse=False)
+                materias_assign = self.create_materia_objects(4)
+                materias_without_date, empty_dates, self.fourth_year_result = self.get_second_call(
+                    materias=materias_assign,
+                    valid_dates=dates,
+                    year_result=self.fourth_year_result)
+                self.fourth_year = self.fourth_year_result, materias_without_date, empty_dates
+            elif grade == 5:
+                empty_dates = self.fifth_year[2]
+                dates = self.get_list_of_dates()[1]
+                [dates.append(date) for date in empty_dates]
+                dates.sort(key=lambda date: datetime.strptime(date, '%d/%m/%y'), reverse=False)
+                materias_assign = self.create_materia_objects(5)
+                materias_without_date, empty_dates, self.fifth_year_result = self.get_second_call(
+                    materias=materias_assign,
+                    valid_dates=dates,
+                    year_result=self.fifth_year_result)
+                self.fifth_year = self.fifth_year_result, materias_without_date, empty_dates
+        return self.first_year, self.second_year, self.third_year, self.fourth_year, self.fifth_year
+
+
+
+
+
     #     first_period, materias_without_date, empty_dates = self.create_first_call_period_first_and_second_year(grade)
     #     dates = self.get_list_of_dates()[1]
     #     [dates.append(date) for date in empty_dates]
@@ -308,50 +420,3 @@ class ExamCall:
     #
     #     materias_assign = self.create_materia_objects(grade)
     #     materias = materias_assign.copy()
-    #     count = 0
-    #
-    #     while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
-    #         count = count + 1
-    #         for materia in materias:
-    #             correlativa = materia.num_corr
-    #
-    #             fecha_asignada = None
-    #
-    #             for fecha in valid_dates:
-    #                 if get_day_of_the_week(fecha) in (materia.dia_1, materia.dia_2):
-    #                     get_fila = self.resultado.loc[self.resultado["materia"].values == materia.nombre]
-    #                     if len(get_fila) > 1:
-    #                         get_fila = get_fila.loc[self.resultado["correlativa num"] == correlativa]
-    #                     if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
-    #                             get_fila["primer llamado"].values[0], 7):
-    #                         if (correlativa in ("0", "1") or
-    #                                 len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
-    #                             if fecha_asignada is None or fecha < fecha_asignada:
-    #                                 fecha_asignada = fecha
-    #                                 break
-    #                         else:
-    #                             get_fila = self.resultado.loc[self.resultado["materia"].values == materia.nombre]
-    #                             if type(get_fila["segundo llamado"].values[0]) == str and pd.to_numeric(
-    #                                     get_fila["correlativa num"].values[0]) < int(materia.num_corr):
-    #                                 if fecha_asignada is None:
-    #                                     if datetime.strptime(fecha, '%d/%m/%y') >= add_days_return_datetime(
-    #                                             get_fila["segundo llamado"].values[0], 5):
-    #                                         fecha_asignada = fecha
-    #                                         break
-    #                                     else:
-    #                                         continue
-    #                             else:
-    #                                 continue
-    #                     else:
-    #                         continue
-    #
-    #             if fecha_asignada:
-    #                 self.resultado.loc[(self.resultado["materia"] == materia.nombre) & (
-    #                         self.resultado["correlativa num"] == correlativa), "segundo llamado"] = fecha_asignada
-    #                 materias.remove(materia)
-    #                 valid_dates.remove(fecha_asignada)
-    #                 break
-    #
-    #     materias_without_date = materias
-    #     empty_dates = valid_dates
-    #     return self.resultado, materias_without_date, empty_dates
