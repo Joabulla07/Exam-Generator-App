@@ -105,9 +105,9 @@ class ExamCall:
         # materia_objects.sort(key=lambda materia: materia.num_corr)
         return materia_objects
 
-    def get_first_year_filters_first_call(self, materias, valid_dates) -> tuple:
+    def get_first_and_second_year_filters_first_call(self, materias, valid_dates) -> tuple:
         count = 0
-
+        result = pd.DataFrame(columns=['grado', 'materia', 'correlativa num', 'primer llamado', 'segundo llamado'])
         while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
             count = count + 1
             for materia in materias:
@@ -117,16 +117,16 @@ class ExamCall:
 
                 for fecha in valid_dates:
                     if get_day_of_the_week(fecha) == materia.dia_1:
-                        if fecha not in self.first_year_result['primer llamado'].values:
+                        if fecha not in result['primer llamado'].values:
                             if (correlativa in ("0", "1") or
                                     len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
                                 if fecha_asignada is None or fecha < fecha_asignada:
                                     fecha_asignada = fecha
                                     break
                             else:
-                                if materia.nombre in self.first_year_result["materia"].values:
-                                    get_fila = self.first_year_result.loc[
-                                        self.first_year_result["materia"].values == materia.nombre]
+                                if materia.nombre in result["materia"].values:
+                                    get_fila = result.loc[
+                                        result["materia"].values == materia.nombre]
                                     if pd.to_numeric(get_fila["correlativa num"].values[0]) < int(materia.num_corr):
                                         if fecha_asignada is None:
                                             fecha_posible = add_days(str(get_fila["primer llamado"].values[0]), 5)
@@ -135,7 +135,7 @@ class ExamCall:
                                                 fecha_asignada = fecha_posible
                                                 break
                                             else:
-                                                while (fecha_posible in self.first_year_result['primer llamado'].values
+                                                while (fecha_posible in result['primer llamado'].values
                                                        or fecha_posible not in valid_dates or get_day_of_the_week(
                                                             fecha_posible) != materia.dia_1):
                                                     fecha_posible = add_days(fecha_posible, 1)
@@ -147,7 +147,7 @@ class ExamCall:
                         continue
 
                 if fecha_asignada:
-                    self.first_year_result = self.first_year_result._append(
+                    result = result._append(
                         {'grado': materia.grado, 'materia': materia.nombre, 'correlativa num': materia.num_corr,
                          'primer llamado': fecha_asignada}, ignore_index=True)
 
@@ -155,11 +155,12 @@ class ExamCall:
                     valid_dates.remove(fecha_asignada)
                     break
 
-        return materias, valid_dates
+        return materias, valid_dates, result
 
-    def get_second_year_filters_first_call(self, materias, valid_dates) -> tuple:
+    def get_third_and_fourth_year_filters_first_call(self, materias, valid_dates, central_materia,
+                                                     last_date_materia) -> tuple:
         count = 0
-
+        result = pd.DataFrame(columns=['grado', 'materia', 'correlativa num', 'primer llamado', 'segundo llamado'])
         while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
             count = count + 1
             for materia in materias:
@@ -169,66 +170,15 @@ class ExamCall:
 
                 for fecha in valid_dates:
                     if get_day_of_the_week(fecha) == materia.dia_1:
-                        if fecha not in self.second_year_result['primer llamado'].values:
+                        if fecha not in result['primer llamado'].values:
                             if (correlativa in ("0", "1") or
                                     len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
                                 if fecha_asignada is None or fecha < fecha_asignada:
                                     fecha_asignada = fecha
                                     break
-                            else:
-                                if materia.nombre in self.second_year_result["materia"].values:
-                                    get_fila = self.second_year_result.loc[
-                                        self.second_year_result["materia"].values == materia.nombre]
-                                    if pd.to_numeric(get_fila["correlativa num"].values[0]) < int(materia.num_corr):
-                                        if fecha_asignada is None:
-                                            fecha_posible = add_days(str(get_fila["primer llamado"].values[0]), 5)
-                                            if fecha_posible in valid_dates and get_day_of_the_week(fecha_posible) in (
-                                                    materia.dia_1, materia.dia_2):
-                                                fecha_asignada = fecha_posible
-                                                break
-                                            else:
-                                                while (fecha_posible in self.second_year_result['primer llamado'].values
-                                                       or fecha_posible not in valid_dates or get_day_of_the_week(
-                                                            fecha_posible) != materia.dia_1):
-                                                    fecha_posible = add_days(fecha_posible, 1)
-                                                fecha_asignada = fecha_posible
-                                                break
-                        else:
-                            continue
-                    else:
-                        continue
-
-                if fecha_asignada:
-                    self.second_year_result = self.second_year_result._append(
-                        {'grado': materia.grado, 'materia': materia.nombre, 'correlativa num': materia.num_corr,
-                         'primer llamado': fecha_asignada}, ignore_index=True)
-
-                    materias.remove(materia)
-                    valid_dates.remove(fecha_asignada)
-                    break
-
-        return materias, valid_dates
-
-    def get_third_year_filters_first_call(self, materias, valid_dates, central_materia, last_date_materia) -> tuple:
-        count = 0
-        while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
-            count = count + 1
-            for materia in materias:
-                correlativa = materia.num_corr
-
-                fecha_asignada = None
-
-                for fecha in valid_dates:
-                    if get_day_of_the_week(fecha) == materia.dia_1:
-                        if fecha not in self.third_year_result['primer llamado'].values:
-                            if (correlativa in ("0", "1") or
-                                    len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
-                                if fecha_asignada is None or fecha < fecha_asignada:
-                                    fecha_asignada = fecha
-                                    break
-                            elif materia.nombre in self.third_year_result["materia"].values:
-                                get_fila = self.third_year_result.loc[
-                                    self.third_year_result["materia"].values == materia.nombre]
+                            elif materia.nombre in result["materia"].values:
+                                get_fila = result.loc[
+                                    result["materia"].values == materia.nombre]
                                 if pd.to_numeric(get_fila["correlativa num"].values[0]) < int(materia.num_corr):
                                     if fecha_asignada is None:
                                         fecha_posible = add_days(str(get_fila["primer llamado"].values[0]), 5)
@@ -237,68 +187,7 @@ class ExamCall:
                                             fecha_asignada = fecha_posible
                                             break
                                         else:
-                                            while (fecha_posible in self.third_year_result['primer llamado'].values
-                                                   or fecha_posible not in valid_dates or get_day_of_the_week(
-                                                        fecha_posible) != materia.dia_1):
-                                                fecha_posible = add_days(fecha_posible, 1)
-                                            fecha_asignada = fecha_posible
-                                            break
-                            elif materia.nombre == central_materia:
-                                if fecha > last_date_materia:
-                                    fecha_asignada = fecha
-                                    break
-                                else:
-                                    fecha_posible = fecha
-                                    while fecha_posible < last_date_materia or fecha_posible not in valid_dates or get_day_of_the_week(
-                                            fecha_posible) not in (materia.dia_1, materia.dia_2):
-                                        fecha_posible = add_days(fecha_posible, 1)
-                                    fecha_asignada = fecha_posible
-                                    break
-                        else:
-                            continue
-                    else:
-                        continue
-
-                if fecha_asignada:
-                    self.third_year_result = self.third_year_result._append(
-                        {'grado': materia.grado, 'materia': materia.nombre, 'correlativa num': materia.num_corr,
-                         'primer llamado': fecha_asignada}, ignore_index=True)
-
-                    materias.remove(materia)
-                    valid_dates.remove(fecha_asignada)
-                    break
-
-        return materias, valid_dates
-
-    def get_fourth_year_filters_first_call(self, materias, valid_dates, central_materia, last_date_materia) -> tuple:
-        count = 0
-        while len(materias) > 0 and len(valid_dates) > 0 and count < 20:
-            count = count + 1
-            for materia in materias:
-                correlativa = materia.num_corr
-
-                fecha_asignada = None
-
-                for fecha in valid_dates:
-                    if get_day_of_the_week(fecha) == materia.dia_1:
-                        if fecha not in self.fourth_year_result['primer llamado'].values:
-                            if (correlativa in ("0", "1") or
-                                    len([mat.nombre for mat in materias if mat.nombre == materia.nombre]) == 1):
-                                if fecha_asignada is None or fecha < fecha_asignada:
-                                    fecha_asignada = fecha
-                                    break
-                            elif materia.nombre in self.fourth_year_result["materia"].values:
-                                get_fila = self.fourth_year_result.loc[
-                                    self.fourth_year_result["materia"].values == materia.nombre]
-                                if pd.to_numeric(get_fila["correlativa num"].values[0]) < int(materia.num_corr):
-                                    if fecha_asignada is None:
-                                        fecha_posible = add_days(str(get_fila["primer llamado"].values[0]), 5)
-                                        if fecha_posible in valid_dates and get_day_of_the_week(fecha_posible) in (
-                                                materia.dia_1, materia.dia_2):
-                                            fecha_asignada = fecha_posible
-                                            break
-                                        else:
-                                            while (fecha_posible in self.fourth_year_result['primer llamado'].values
+                                            while (fecha_posible in result['primer llamado'].values
                                                    or fecha_posible not in valid_dates or get_day_of_the_week(
                                                         fecha_posible) != materia.dia_1):
                                                 fecha_posible = add_days(fecha_posible, 1)
@@ -325,7 +214,7 @@ class ExamCall:
                         continue
 
                 if fecha_asignada:
-                    self.fourth_year_result = self.fourth_year_result._append(
+                    result = result._append(
                         {'grado': materia.grado, 'materia': materia.nombre, 'correlativa num': materia.num_corr,
                          'primer llamado': fecha_asignada}, ignore_index=True)
 
@@ -333,45 +222,48 @@ class ExamCall:
                     valid_dates.remove(fecha_asignada)
                     break
 
-        return materias, valid_dates
+        return materias, valid_dates, result
 
     def create_first_call(self) -> tuple[tuple, tuple, tuple, tuple]:
+        central_materia = self.get_central_subject_of_career()
         for grade in range(1, 5):
             if grade == 1:
                 dates = self.get_list_of_dates()[0]
                 materias_assign = self.create_materia_objects(1)
-                materias_without_date, empty_dates = self.get_first_year_filters_first_call(materias=materias_assign,
-                                                                                 valid_dates=dates)
+                materias_without_date, empty_dates, self.first_year_result = self.get_first_and_second_year_filters_first_call(
+                    materias=materias_assign,
+                    valid_dates=dates)
                 self.first_year = self.first_year_result, materias_without_date, empty_dates
             elif grade == 2:
                 dates = self.get_list_of_dates()[0]
                 materias_assign = self.create_materia_objects(2)
-                materias_without_date, empty_dates = self.get_second_year_filters_first_call(materias=materias_assign,
-                                                                                  valid_dates=dates)
+                materias_without_date, empty_dates, self.second_year_result = self.get_first_and_second_year_filters_first_call(
+                    materias=materias_assign,
+                    valid_dates=dates)
                 self.second_year = self.second_year_result, materias_without_date, empty_dates
             elif grade == 3:
                 dates = self.get_list_of_dates()[0]
                 materias_assign = self.create_materia_objects(3)
-                central_materia = self.get_central_subject_of_career()
                 get_fila = self.second_year_result.loc[self.second_year_result["materia"].values == central_materia]
                 get_last_call_materia = get_fila.sort_values(by=["correlativa num"], ascending=False)
                 last_date_materia = get_last_call_materia["primer llamado"].values[0]
-                materias_without_date, empty_dates = self.get_third_year_filters_first_call(materias=materias_assign,
-                                                                                 valid_dates=dates,
-                                                                                 central_materia=central_materia,
-                                                                                 last_date_materia=last_date_materia)
+                materias_without_date, empty_dates, self.third_year_result = self.get_third_and_fourth_year_filters_first_call(
+                    materias=materias_assign,
+                    valid_dates=dates,
+                    central_materia=central_materia,
+                    last_date_materia=last_date_materia)
                 self.third_year = self.third_year_result, materias_without_date, empty_dates
             elif grade == 4:
                 dates = self.get_list_of_dates()[0]
                 materias_assign = self.create_materia_objects(4)
-                central_materia = self.get_central_subject_of_career()
                 get_fila = self.third_year_result.loc[self.third_year_result["materia"].values == central_materia]
                 get_last_call_materia = get_fila.sort_values(by=["correlativa num"], ascending=False)
                 last_date_materia = get_last_call_materia["primer llamado"].values[0]
-                materias_without_date, empty_dates = self.get_fourth_year_filters_first_call(materias=materias_assign,
-                                                                                  valid_dates=dates,
-                                                                                  central_materia=central_materia,
-                                                                                  last_date_materia=last_date_materia)
+                materias_without_date, empty_dates, self.fourth_year_result = self.get_third_and_fourth_year_filters_first_call(
+                    materias=materias_assign,
+                    valid_dates=dates,
+                    central_materia=central_materia,
+                    last_date_materia=last_date_materia)
                 self.fourth_year = self.fourth_year_result, materias_without_date, empty_dates
 
         return self.first_year, self.second_year, self.third_year, self.fourth_year
