@@ -407,16 +407,3 @@ class ExamCall:
                     year_result=self.fifth_year_result)
                 self.fifth_year = self.fifth_year_result, materias_without_date, empty_dates
         return self.first_year, self.second_year, self.third_year, self.fourth_year, self.fifth_year
-
-
-
-
-
-    #     first_period, materias_without_date, empty_dates = self.create_first_call_period_first_and_second_year(grade)
-    #     dates = self.get_list_of_dates()[1]
-    #     [dates.append(date) for date in empty_dates]
-    #     dates.sort(key=lambda date: datetime.strptime(date, '%d/%m/%y'), reverse=False)
-    #     valid_dates = dates.copy()
-    #
-    #     materias_assign = self.create_materia_objects(grade)
-    #     materias = materias_assign.copy()
