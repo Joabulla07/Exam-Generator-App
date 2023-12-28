@@ -1,3 +1,5 @@
+import os
+import sys
 from datetime import datetime
 
 import pandas as pd
@@ -160,6 +162,27 @@ class DateForm(QWidget):
                       "career_name": career_name}
 
             call = ExamCall(df, period)
-            generate_calls = call.create_first_call()
+            try:
+                self.get_output(call)
+                message_box = QMessageBox()
+                message_box.setWindowIcon(QIcon('images/files.ico'))
+                message_box.setText("Mesas generadas con exito")
+                message_box.accept()
+                message_box.exec()
+            except:
+                QMessageBox.setWindowIcon(QIcon('images/files.ico'))
+                QMessageBox.warning(self, "Error", "Error generando mesas")
+            finally:
+                sys.exit()
 
-            # Todo: crear conversion de csv o excel de cada mesa y descargar
+    def get_output(self, call: ExamCall):
+        path_desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+
+        os.makedirs(f"{path_desktop}/mesas", exist_ok=True)
+
+        call.create_second_call()
+        call.first_year_result.to_excel(f"{path_desktop}/mesas/mesas_primer_año.xlsx")
+        call.second_year_result.to_excel(f"{path_desktop}/mesas/mesas_segundo_año.xlsx")
+        call.third_year_result.to_excel(f"{path_desktop}/mesas/mesas_tercer_año.xlsx")
+        call.fourth_year_result.to_excel(f"{path_desktop}/mesas/mesas_cuarto_año.xlsx")
+        call.fifth_year_result.to_excel(f"{path_desktop}/mesas/mesas_quinto_año.xlsx")
