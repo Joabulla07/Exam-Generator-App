@@ -1,11 +1,22 @@
-class Materia:
-    def __init__(self, grado, nombre, dia_1, dia_2, num_corr="0", fecha=None):
-        self.grado = grado
-        self.nombre = nombre
-        self.num_corr = num_corr
-        self.dia_1 = dia_1
-        self.dia_2 = dia_2
-        self.fecha = fecha
+class Subject:
+    def __init__(
+        self,
+        grade,
+        subject_name,
+        day_1,
+        day_2,
+        correlative_number="0",
+        date_assigned=None,
+    ):
+        self.grade = grade
+        self.subject_name = subject_name
+        self.correlative_number = correlative_number
+        self.day_1 = day_1
+        self.day_2 = day_2
+        self.date_assigned = date_assigned
 
-    def __repr__(self):
-        return f"Nombre: {self.nombre}, Grado: {self.grado}, Numero: {self.num_corr}, Dia: {self.dia_1}"
+    def __repr__(self) -> str:
+        return (
+            f"Subject Name: {self.subject_name}, Grade: {self.grade}, "
+            f"Correlative Number: {self.correlative_number}, Preference Day one: {self.day_1}"
+        )

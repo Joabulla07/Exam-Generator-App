@@ -104,6 +104,10 @@ class DateForm(QWidget):
         self.generate_button.clicked.connect(self.generate_period)
 
     def validate_date_one_for_second_period(self) -> bool:
+        """
+        Validate that the date is in the correct format
+        :return: bool
+        """
         start_date_first = datetime.strptime(
             self.start_date_edit_fist_call.text(), "%d/%m/%y"
         )
@@ -125,6 +129,10 @@ class DateForm(QWidget):
             QMessageBox.warning(self, "Error", "Invalid date")
 
     def validate_date_two_second_period(self) -> bool:
+        """
+        Validate that the date is in the correct format
+        :return: bool
+        """
         end_date = self.end_date_edit_second_call.text()
         start_date = self.start_date_edit_second_call.text()
         buttom = self.generate_end_buttom_second
@@ -140,6 +148,10 @@ class DateForm(QWidget):
             QMessageBox.warning(self, "Error", "Invalid date")
 
     def validate_date_one_for_first_period(self) -> bool:
+        """
+        Validate that the date is in the correct format
+        :return: bool
+        """
         start_date = self.start_date_edit_fist_call.text()
         buttom = self.generate_start_buttom_first
         try:
@@ -154,6 +166,10 @@ class DateForm(QWidget):
             QMessageBox.warning(self, "Error", "Invalid date")
 
     def validate_date_two_first_period(self) -> bool:
+        """
+        Validate that the date is in the correct format
+        :return: bool
+        """
         end_date = self.end_date_edit_fist_call.text()
         start_date = self.start_date_edit_fist_call.text()
         buttom = self.generate_end_buttom_first
@@ -169,6 +185,10 @@ class DateForm(QWidget):
             QMessageBox.warning(self, "Error", "Invalid date")
 
     def import_excel(self) -> DataFrame | None:
+        """
+        Import the file and return it as a DataFrame
+        :return: DataFrame / None
+        """
         file_path, _ = QFileDialog.getOpenFileName(
             self, "Importar Excel", ".", "Archivos Excel (*.xlsx *.xls)"
         )
@@ -178,7 +198,11 @@ class DateForm(QWidget):
         else:
             return None
 
-    def generate_period(self):
+    def generate_period(self) -> None:
+        """
+        Generate the exam calls and generate the message boxes
+        :return: None
+        """
         start_date_first_period = self.start_date_edit_fist_call.text()
         end_date_first_period = self.end_date_edit_fist_call.text()
         start_date_second_period = self.start_date_edit_second_call.text()
@@ -213,7 +237,12 @@ class DateForm(QWidget):
             finally:
                 sys.exit()
 
-    def get_output(self, call: ExamCall):
+    def get_output(self, call: ExamCall) -> None:
+        """
+        Convert Dataframes to Excel and export it to a folder on Desktop
+        :param call: ExamCall
+        :return:
+        """
         path_desktop = os.path.join(os.path.join(os.environ["USERPROFILE"]), "Desktop")
 
         os.makedirs(f"{path_desktop}/mesas", exist_ok=True)
