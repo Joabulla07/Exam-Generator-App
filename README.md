@@ -13,7 +13,13 @@ To install and run the app locally, follow these steps:
 
 
 ## ⚠️ Dependencies - coming soon
+A pre-commit dependency is required for code formatting and performing local validations before pushing to a remote branch. To install:
 
+1. Confirm the pre-commit module is installed with pre-commit --version.
+2. Install the pre-commit hook in your local repository with pre-commit install.
+3. The pre-commit run with pre-commit run
+
+A pre-commit hook will now be installed in your local repository, which will run checks before allowing commits. If any checks fail, please review your staging area for any necessary fixes.
 
 ## 💊 Test App
 Execute tests with coverage using
