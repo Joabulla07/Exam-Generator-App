@@ -3,12 +3,24 @@ import sys
 from datetime import datetime
 
 import pandas as pd
-from PySide6.QtGui import QIcon, Qt
-from PySide6.QtWidgets import QWidget, QLabel, QFormLayout, QLineEdit, QPushButton, QMessageBox, QFileDialog
 from pandas import DataFrame
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import (
+    QFileDialog,
+    QFormLayout,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QPushButton,
+    QWidget,
+)
 
 from services.exam_call import ExamCall
-from utils.common.validation_utils import validate_start_date_and_today, validate_date_end, validate_date
+from utils.common.validation_utils import (
+    validate_date,
+    validate_date_end,
+    validate_start_date_and_today,
+)
 
 
 class DateForm(QWidget):
@@ -17,7 +29,7 @@ class DateForm(QWidget):
 
         # Configurar el formulario
         self.setWindowTitle("Exam Date Generator App")
-        self.setWindowIcon(QIcon('images/files.ico'))
+        self.setWindowIcon(QIcon("images/files.ico"))
         self.setGeometry(400, 400, 600, 350)
         layout = QFormLayout()
         self.setLayout(layout)
@@ -40,17 +52,23 @@ class DateForm(QWidget):
             """
         )
         layout.addWidget(self.title_first)
-        layout.addRow(QLabel("Fecha de inicio (dd/mm/yy):"), self.start_date_edit_fist_call)
+        layout.addRow(
+            QLabel("Fecha de inicio (dd/mm/yy):"), self.start_date_edit_fist_call
+        )
         self.generate_start_buttom_first = QPushButton("Validar")
         self.generate_start_buttom_first.setFixedSize(60, 20)
         layout.addWidget(self.generate_start_buttom_first)
-        self.generate_start_buttom_first.clicked.connect(self.validate_date_one_for_first_period)
+        self.generate_start_buttom_first.clicked.connect(
+            self.validate_date_one_for_first_period
+        )
 
         layout.addRow(QLabel("Fecha de fin (dd/mm/yy):"), self.end_date_edit_fist_call)
         self.generate_end_buttom_first = QPushButton("Validar")
         self.generate_end_buttom_first.setFixedSize(60, 20)
         layout.addWidget(self.generate_end_buttom_first)
-        self.generate_end_buttom_first.clicked.connect(self.validate_date_two_first_period)
+        self.generate_end_buttom_first.clicked.connect(
+            self.validate_date_two_first_period
+        )
 
         # SECOND CALL
         self.title_second = QLabel("SEGUNDO LLAMADO", self)
@@ -61,30 +79,42 @@ class DateForm(QWidget):
             """
         )
         layout.addWidget(self.title_second)
-        layout.addRow(QLabel("Fecha de inicio (dd/mm/yy):"), self.start_date_edit_second_call)
+        layout.addRow(
+            QLabel("Fecha de inicio (dd/mm/yy):"), self.start_date_edit_second_call
+        )
         self.generate_start_buttom_second = QPushButton("Validar")
         self.generate_start_buttom_second.setFixedSize(60, 20)
         layout.addWidget(self.generate_start_buttom_second)
-        self.generate_start_buttom_second.clicked.connect(self.validate_date_one_for_second_period)
+        self.generate_start_buttom_second.clicked.connect(
+            self.validate_date_one_for_second_period
+        )
 
-        layout.addRow(QLabel("Fecha de fin (dd/mm/yy):"), self.end_date_edit_second_call)
+        layout.addRow(
+            QLabel("Fecha de fin (dd/mm/yy):"), self.end_date_edit_second_call
+        )
         self.generate_end_buttom_second = QPushButton("Validar")
         self.generate_end_buttom_second.setFixedSize(60, 20)
         layout.addWidget(self.generate_end_buttom_second)
-        self.generate_end_buttom_second.clicked.connect(self.validate_date_two_second_period)
+        self.generate_end_buttom_second.clicked.connect(
+            self.validate_date_two_second_period
+        )
 
         self.generate_button = QPushButton("Generar", self)
         layout.addWidget(self.generate_button)
         self.generate_button.clicked.connect(self.generate_period)
 
     def validate_date_one_for_second_period(self) -> bool:
-        start_date_first = datetime.strptime(self.start_date_edit_fist_call.text(), '%d/%m/%y')
-        end_date_first = datetime.strptime(self.end_date_edit_fist_call.text(), '%d/%m/%y')
+        start_date_first = datetime.strptime(
+            self.start_date_edit_fist_call.text(), "%d/%m/%y"
+        )
+        end_date_first = datetime.strptime(
+            self.end_date_edit_fist_call.text(), "%d/%m/%y"
+        )
         start_date = self.start_date_edit_second_call.text()
         buttom = self.generate_start_buttom_second
         try:
             validate_date(start_date)
-            end_date = datetime.strptime(start_date, '%d/%m/%y')
+            end_date = datetime.strptime(start_date, "%d/%m/%y")
             if end_date > start_date_first and end_date > end_date_first:
                 icon = QIcon("images/check.png")
                 buttom.setIcon(icon)
@@ -139,7 +169,9 @@ class DateForm(QWidget):
             QMessageBox.warning(self, "Error", "Invalid date")
 
     def import_excel(self) -> DataFrame | None:
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Importar Excel', ".", "Archivos Excel (*.xlsx *.xls)")
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, "Importar Excel", ".", "Archivos Excel (*.xlsx *.xls)"
+        )
         if file_path:
             data = pd.read_excel(file_path)
             return data
@@ -152,31 +184,37 @@ class DateForm(QWidget):
         start_date_second_period = self.start_date_edit_second_call.text()
         end_date_second_period = self.end_date_edit_second_call.text()
         career_name = self.career_name.text()
-        if (((self.validate_date_one_for_first_period() and self.validate_date_one_for_second_period()
-              and self.validate_date_two_first_period() and self.validate_date_two_second_period()))):
+        if (
+            self.validate_date_one_for_first_period()
+            and self.validate_date_one_for_second_period()
+            and self.validate_date_two_first_period()
+            and self.validate_date_two_second_period()
+        ):
             df = self.import_excel()
-            period = {"start_date_first_period": start_date_first_period,
-                      "end_date_first_period": end_date_first_period,
-                      "start_date_second_period": start_date_second_period,
-                      "end_date_second_period": end_date_second_period,
-                      "career_name": career_name}
+            period = {
+                "start_date_first_period": start_date_first_period,
+                "end_date_first_period": end_date_first_period,
+                "start_date_second_period": start_date_second_period,
+                "end_date_second_period": end_date_second_period,
+                "career_name": career_name,
+            }
 
             call = ExamCall(df, period)
             try:
                 self.get_output(call)
                 message_box = QMessageBox()
-                message_box.setWindowIcon(QIcon('images/files.ico'))
+                message_box.setWindowIcon(QIcon("images/files.ico"))
                 message_box.setText("Mesas generadas con exito")
                 message_box.accept()
                 message_box.exec()
             except:
-                QMessageBox.setWindowIcon(QIcon('images/files.ico'))
+                QMessageBox.setWindowIcon(QIcon("images/files.ico"))
                 QMessageBox.warning(self, "Error", "Error generando mesas")
             finally:
                 sys.exit()
 
     def get_output(self, call: ExamCall):
-        path_desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+        path_desktop = os.path.join(os.path.join(os.environ["USERPROFILE"]), "Desktop")
 
         os.makedirs(f"{path_desktop}/mesas", exist_ok=True)
 

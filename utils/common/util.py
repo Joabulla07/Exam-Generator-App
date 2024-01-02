@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 
 def get_day_of_the_week(date: str) -> str:
-    date_converted = datetime.strptime(date, '%d/%m/%y')
+    date_converted = datetime.strptime(date, "%d/%m/%y")
     date_of_week = date_converted.weekday()
 
     match date_of_week:
@@ -19,14 +19,14 @@ def get_day_of_the_week(date: str) -> str:
 
 
 def add_days(date: str, days: int) -> str:
-    date_converted = datetime.strptime(date, '%d/%m/%y')
+    date_converted = datetime.strptime(date, "%d/%m/%y")
     date_add = date_converted + timedelta(days=days)
 
     return date_add.strftime("%d/%m/%y")
 
 
 def add_days_return_datetime(date: str, days: int) -> datetime:
-    date_converted = datetime.strptime(date, '%d/%m/%y')
+    date_converted = datetime.strptime(date, "%d/%m/%y")
     date_add = date_converted + timedelta(days=days)
 
     return date_add

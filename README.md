@@ -20,7 +20,7 @@ Execute tests with coverage using
 - `pytest --cov-config=.coveragerc --cov=. --cov-fail-under=5 tests/unit`
 
 
-## 📋  Instructions for users 
+## 📋  Instructions for users
 
 1. Excel columns must have the names:
    1. "grado", "materia" , "dia" and "segundo dia"
@@ -29,7 +29,7 @@ Execute tests with coverage using
    1. Example: "Tècnica 1", "Tècnica 2".
 3. Dates must have "dd/mm/yy" format. Ex: "02/02/24".
 4. You need to add the career name at first field.
-    
+
 ## Extra documentation
 1. Jira: https://joannabbado4748.atlassian.net/jira/software/projects/EDG/boards/1
 2. wiki: https://joannabbado4748.atlassian.net/wiki/home

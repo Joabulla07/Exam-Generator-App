@@ -1,6 +1,7 @@
+import unicodedata
+
 import numpy as np
 import pandas as pd
-import unicodedata
 from pandas import DataFrame
 
 
@@ -21,7 +22,7 @@ def convert_dataframe_lower_upper_accent(df: DataFrame):
     df.dia = [d.upper() for d in df.dia]
 
     for dias in df.segundo_dia:
-        if dias in ('', ' ', 'nan', np.nan) or type(dias) == float:
+        if dias in ("", " ", "nan", np.nan) or type(dias) == float:
             df.segundo_dia = "None"
 
     df.segundo_dia = [d.lower() for d in df.segundo_dia]
@@ -46,4 +47,6 @@ def sort_dataframe(df: DataFrame) -> DataFrame:
 
 
 def remove_accents(text: str) -> str:
-    return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
+    return "".join(
+        c for c in unicodedata.normalize("NFD", text) if unicodedata.category(c) != "Mn"
+    )
