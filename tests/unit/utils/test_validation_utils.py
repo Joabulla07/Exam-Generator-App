@@ -1,4 +1,3 @@
-import mock
 import pytest
 
 from utils.common.validation_utils import *
