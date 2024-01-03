@@ -6,6 +6,7 @@ import pandas as pd
 from pandas import DataFrame
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
+    QComboBox,
     QFileDialog,
     QFormLayout,
     QLabel,
@@ -33,15 +34,19 @@ class DateForm(QWidget):
         self.setGeometry(400, 400, 600, 350)
         layout = QFormLayout()
         self.setLayout(layout)
+        self.pageCombo = QComboBox()
 
         self.start_date_edit_fist_call = QLineEdit(self)
         self.end_date_edit_fist_call = QLineEdit(self)
         self.start_date_edit_second_call = QLineEdit(self)
         self.end_date_edit_second_call = QLineEdit(self)
-        self.career_name = QLineEdit()
+        self.career_name = None
 
         # CAREER NAME
-        layout.addRow(QLabel("Ingrese el nombre de la carrera:"), self.career_name)
+        # layout.addRow(QLabel("Ingrese el nombre de la carrera:"), self.career_name)
+        self.pageCombo.addItems(["Seleccione la carrera", "Kinesiología", "Nutrición"])
+        self.pageCombo.activated.connect(self.switchPage)
+        layout.addWidget(self.pageCombo)
 
         # FIRST CALL
         self.title_first = QLabel("PRIMER LLAMADO", self)
@@ -102,6 +107,13 @@ class DateForm(QWidget):
         self.generate_button = QPushButton("Generar", self)
         layout.addWidget(self.generate_button)
         self.generate_button.clicked.connect(self.generate_period)
+
+    def switchPage(self):
+        index = self.pageCombo.currentIndex()
+        if index == 1:
+            self.career_name = "kinesiologia"
+        elif index == 2:
+            self.career_name = "nutricion"
 
     def validate_date_one_for_second_period(self) -> bool:
         """
@@ -207,7 +219,6 @@ class DateForm(QWidget):
         end_date_first_period = self.end_date_edit_fist_call.text()
         start_date_second_period = self.start_date_edit_second_call.text()
         end_date_second_period = self.end_date_edit_second_call.text()
-        career_name = self.career_name.text()
         if (
             self.validate_date_one_for_first_period()
             and self.validate_date_one_for_second_period()
@@ -220,9 +231,8 @@ class DateForm(QWidget):
                 "end_date_first_period": end_date_first_period,
                 "start_date_second_period": start_date_second_period,
                 "end_date_second_period": end_date_second_period,
-                "career_name": career_name,
+                "career_name": self.career_name,
             }
-
             call = ExamCall(df, period)
             try:
                 self.get_output(call)
