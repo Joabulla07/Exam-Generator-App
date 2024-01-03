@@ -2,7 +2,8 @@
 A university in Resistencia-Chaco requires a system to create examination schedules for its students. So this app was created to satisfies that necessity.
 This app was created using PyQt.
 
-![image](https://github.com/Joabulla07/Exam-Generator-App/assets/40646853/b78b7c2a-bfde-470f-8451-ee3e68f989d8)
+![image](https://github.com/Joabulla07/Exam-Generator-App/assets/40646853/dd6474be-5166-4919-a778-329aad6f9524)
+
 
 
 
