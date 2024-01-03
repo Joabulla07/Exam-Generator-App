@@ -9,3 +9,5 @@ jupyter
 .coverage
 main.spec
 pyinstaller.py
+build
+dist
