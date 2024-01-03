@@ -44,7 +44,6 @@ class DateForm(QWidget):
         self.end_date_edit_second_call = QLineEdit(self)
         self.career_name = None
 
-        #########################################################
         link_layout = QHBoxLayout()
         link_layout.setContentsMargins(10, 10, 0, 0)
         self.setLayout(link_layout)
@@ -58,7 +57,6 @@ class DateForm(QWidget):
         )
 
         link_layout.addWidget(self.link_label)
-        ##############################################################
 
         # CAREER NAME
         self.pageCombo.addItems(["Seleccione la carrera", "Kinesiología", "Nutrición"])
