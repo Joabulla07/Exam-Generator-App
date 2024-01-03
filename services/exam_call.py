@@ -4,7 +4,7 @@ from pandas import DataFrame
 from model.materia import Subject
 from utils.common.util import *
 from utils.common.validation_utils import validate_date_is_not_holiday_or_weekend
-from utils.model.dataframe_utils import divide_dataframe_in_grade, remove_accents
+from utils.model.dataframe_utils import divide_dataframe_in_grade
 
 
 class ExamCall:
@@ -70,26 +70,12 @@ class ExamCall:
         self.grade_5 = divide_dataframe_in_grade(self.df)[4]
         self.career_name = self.period["career_name"]
 
-    def get_name_career(self) -> str:
-        """
-        get the career name
-        :return: str
-        """
-        career_name = None
-        name = remove_accents(self.career_name).lower()
-        if name.startswith("kin"):
-            career_name = "kinesiologia"
-        elif name.startswith("nutri"):
-            career_name = "nutricion"
-        return career_name
-
     def get_central_subject_of_career(self) -> str | None:
         """
         get the central subject of the career
         :return: str
         """
-        career_name = self.get_name_career()
-        if career_name == "kinesiologia":
+        if self.career_name == "kinesiologia":
             return "TECNICAS KINESICAS "
         else:
             return None
@@ -562,7 +548,7 @@ class ExamCall:
             if grade == 3:
                 dates = self.get_list_of_dates()[0]
                 assign_subject = self.create_subject_objects(3)
-                if self.get_name_career() == "nutricion":
+                if self.career_name == "nutricion":
                     (
                         empty_dates,
                         self.third_year_result,
@@ -593,7 +579,7 @@ class ExamCall:
             elif grade == 4:
                 dates = self.get_list_of_dates()[0]
                 assign_subject = self.create_subject_objects(4)
-                if self.get_name_career() == "nutricion":
+                if self.career_name == "nutricion":
                     (
                         empty_dates,
                         self.fourth_year_result,
