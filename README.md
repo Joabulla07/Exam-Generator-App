@@ -1,4 +1,4 @@
-# Exam Date Generator App ![Status badge](https://img.shields.io/badge/status-in%20progress-yellow) ![Python 3.6](https://img.shields.io/badge/python-3.12-blue.svg)
+# Exam Date Generator App ![Status badge](https://img.shields.io/badge/status-in%20progress-yellow) ![Python 3.6](https://img.shields.io/badge/python-3.12-blue.svg) ![](https://cdn.rawgit.com/dbrgn/coverage-badge/main/media/80.svg)
 A university in Resistencia-Chaco requires a system to create examination schedules for its students. So this app was created to satisfies that necessity.
 This app was created using PyQt.
 

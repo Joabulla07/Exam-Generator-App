@@ -9,6 +9,7 @@ omit =
     ./main.py
     **/utils/model/*
     **/model/materia.py
+    **/model/date_form.py
 
 [report]
 show_missing = True

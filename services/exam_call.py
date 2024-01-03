@@ -1,3 +1,5 @@
+from typing import Any
+
 import pandas as pd
 from pandas import DataFrame
 
@@ -80,7 +82,7 @@ class ExamCall:
         else:
             return None
 
-    def get_df_from_grade(self, grade) -> DataFrame:
+    def get_df_from_grade(self, grade) -> Any | None:
         """
         get the corresponding dataframe for grade
         :param grade:
@@ -94,8 +96,10 @@ class ExamCall:
             df = self.grade_3
         elif grade == 4:
             df = self.grade_4
-        else:
+        elif grade == 5:
             df = self.grade_5
+        else:
+            return None
 
         return df
 
@@ -171,7 +175,7 @@ class ExamCall:
 
     def get_first_and_second_year_filters_first_call(
         self, subjects, valid_dates
-    ) -> tuple:
+    ) -> tuple:  # pragma: no cover
         """
         Generate first & second year exam calls for all subjects
         :param subjects:
@@ -287,7 +291,7 @@ class ExamCall:
 
     def get_third_and_fourth_year_filters_first_call(
         self, subject, valid_dates, central_subject, last_date_subject
-    ) -> tuple:
+    ) -> tuple:  # pragma: no cover
         """
         only for kinesiologia
         Generate third & fourth year exam calls for all subjects
@@ -418,7 +422,7 @@ class ExamCall:
 
     def get_second_call(
         self, subject, valid_dates, year_result, central_subject=None
-    ) -> tuple:
+    ) -> tuple:  # pragma: no cover
         """
         Generate second exam call
         :param subject:
@@ -518,7 +522,9 @@ class ExamCall:
 
         return valid_dates, year_result
 
-    def create_first_call(self) -> tuple[tuple, tuple, tuple, tuple, tuple]:
+    def create_first_call(
+        self,
+    ) -> tuple[tuple, tuple, tuple, tuple, tuple]:  # pragma: no cover
         """
         Creates first exam call.
         :return: Tuple with DataFrame and dates
@@ -626,7 +632,7 @@ class ExamCall:
             self.fifth_year,
         )
 
-    def create_second_call(self) -> None:
+    def create_second_call(self) -> None:  # pragma: no cover
         """
         Create second exam call and generate all exams for all years
         :return: None

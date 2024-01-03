@@ -19,7 +19,8 @@ def get_period():
     return {"start_date_first_period": "02/02/24",
             "end_date_first_period": "20/02/24",
             "start_date_second_period": "26/02/24",
-            "end_date_second_period": "08/03/24"}
+            "end_date_second_period": "08/03/24",
+            "career_name": "kinesiologia"}
 
 
 @pytest.fixture
