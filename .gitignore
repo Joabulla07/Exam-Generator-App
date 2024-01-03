@@ -7,3 +7,5 @@ venv
 docs
 jupyter
 .coverage
+main.spec
+pyinstaller.py

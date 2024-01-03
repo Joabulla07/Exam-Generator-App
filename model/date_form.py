@@ -32,7 +32,7 @@ class DateForm(QWidget):
 
         # Configurar el formulario
         self.setWindowTitle("Exam Date Generator App")
-        self.setWindowIcon(QIcon("images/files.ico"))
+        self.setWindowIcon(QIcon("_internal/images/files.ico"))
         self.setGeometry(400, 400, 600, 350)
         layout = QFormLayout()
         self.setLayout(layout)
@@ -146,18 +146,20 @@ class DateForm(QWidget):
             self.end_date_edit_fist_call.text(), "%d/%m/%y"
         )
         start_date = self.start_date_edit_second_call.text()
-        buttom = self.generate_start_buttom_second
         try:
             validate_date(start_date)
             end_date = datetime.strptime(start_date, "%d/%m/%y")
             if end_date > start_date_first and end_date > end_date_first:
-                icon = QIcon("images/check.png")
-                buttom.setIcon(icon)
+                message_box = QMessageBox()
+                message_box.setWindowIcon(QIcon("images/files.ico"))
+                message_box.setText("Fecha válida")
+                message_box.accept()
+                message_box.exec()
                 return True
             else:
                 raise Exception
         except:
-            QMessageBox.warning(self, "Error", "Invalid date")
+            QMessageBox.warning(self, "Error", "Fecha inválida")
 
     def validate_date_two_second_period(self) -> bool:
         """
@@ -166,17 +168,19 @@ class DateForm(QWidget):
         """
         end_date = self.end_date_edit_second_call.text()
         start_date = self.start_date_edit_second_call.text()
-        buttom = self.generate_end_buttom_second
         try:
             validate_date(end_date)
             if validate_date_end(end_date, start_date):
-                icon = QIcon("images/check.png")
-                buttom.setIcon(icon)
+                message_box = QMessageBox()
+                message_box.setWindowIcon(QIcon("images/files.ico"))
+                message_box.setText("Fecha válida")
+                message_box.accept()
+                message_box.exec()
                 return True
             else:
                 raise Exception
         except:
-            QMessageBox.warning(self, "Error", "Invalid date")
+            QMessageBox.warning(self, "Error", "Fecha inválida")
 
     def validate_date_one_for_first_period(self) -> bool:
         """
@@ -184,17 +188,19 @@ class DateForm(QWidget):
         :return: bool
         """
         start_date = self.start_date_edit_fist_call.text()
-        buttom = self.generate_start_buttom_first
         try:
             validate_date(start_date)
             if validate_start_date_and_today(start_date):
-                icon = QIcon("images/check.png")
-                buttom.setIcon(icon)
+                message_box = QMessageBox()
+                message_box.setWindowIcon(QIcon("images/files.ico"))
+                message_box.setText("Fecha válida")
+                message_box.accept()
+                message_box.exec()
                 return True
             else:
                 raise Exception
         except:
-            QMessageBox.warning(self, "Error", "Invalid date")
+            QMessageBox.warning(self, "Error", "Fecha inválida")
 
     def validate_date_two_first_period(self) -> bool:
         """
@@ -203,17 +209,19 @@ class DateForm(QWidget):
         """
         end_date = self.end_date_edit_fist_call.text()
         start_date = self.start_date_edit_fist_call.text()
-        buttom = self.generate_end_buttom_first
         try:
             validate_date(end_date)
             if validate_date_end(end_date, start_date):
-                icon = QIcon("images/check.png")
-                buttom.setIcon(icon)
+                message_box = QMessageBox()
+                message_box.setWindowIcon(QIcon("images/files.ico"))
+                message_box.setText("Fecha válida")
+                message_box.accept()
+                message_box.exec()
                 return True
             else:
                 raise Exception
         except:
-            QMessageBox.warning(self, "Error", "Invalid date")
+            QMessageBox.warning(self, "Error", "Fecha inválida")
 
     def import_excel(self) -> DataFrame | None:
         """
