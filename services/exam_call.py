@@ -369,7 +369,7 @@ class ExamCall:
                                                 )
                                             assigned_date = possible_date
                                             break
-                            elif item.nombre == central_subject:
+                            elif item.subject_name == central_subject:
                                 if date > last_date_subject:
                                     assigned_date = date
                                     break
@@ -446,7 +446,7 @@ class ExamCall:
         while len(subject) > 0 and len(valid_dates) > 0 and count < 20:
             count = count + 1
             for item in subject:
-                correlative = item.num_corr
+                correlative = item.correlative_number
 
                 assigned_date = None
 
