@@ -1,0 +1,21 @@
+El documento de excel para que sea leido correctamente deberá tener las siguientes columnas con los
+siguientes nombres tal cual se detalla a continuacion:
+
+GRADO   |   MATERIA	  |     DIA	    |   SEGUNDO_DIA
+
+
+-   GRADO:          En esta columna va el año de la materia.
+
+-   DIA:            En esta columna se designa el dia de preferencia de la materia
+
+-   SEGUNDO_DIA:    En esta columna se designa si tiene otro dia de preferencia si es que no se puede
+                    colocar la materia en el dia de preferencia principal
+
+Las materias que tienen correlativas, deberán contener un numero decimal en vez de romano.
+Por ejemplo:
+        "Tècnica 1"
+        "Tècnica 2"
+
+
+Tratar de organizar las materias por año y por cuatrimestre. Primero las de primer año organizadas por cuatrimestre
+y asi con los demas años.

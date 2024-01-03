@@ -4,11 +4,13 @@ from datetime import datetime
 
 import pandas as pd
 from pandas import DataFrame
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import QUrl
+from PySide6.QtGui import QDesktopServices, QIcon
 from PySide6.QtWidgets import (
     QComboBox,
     QFileDialog,
     QFormLayout,
+    QHBoxLayout,
     QLabel,
     QLineEdit,
     QMessageBox,
@@ -42,8 +44,23 @@ class DateForm(QWidget):
         self.end_date_edit_second_call = QLineEdit(self)
         self.career_name = None
 
+        #########################################################
+        link_layout = QHBoxLayout()
+        link_layout.setContentsMargins(10, 10, 0, 0)
+        self.setLayout(link_layout)
+
+        self.link_label = QPushButton("Instrucciones de uso", self)
+        self.link_label.clicked.connect(self.open_instructions)
+
+        self.link_label.setFixedSize(self.link_label.sizeHint())
+        self.link_label.setStyleSheet(
+            "font-size: 12px; border: None; color:blue; text-decoration: underline;"
+        )
+
+        link_layout.addWidget(self.link_label)
+        ##############################################################
+
         # CAREER NAME
-        # layout.addRow(QLabel("Ingrese el nombre de la carrera:"), self.career_name)
         self.pageCombo.addItems(["Seleccione la carrera", "Kinesiología", "Nutrición"])
         self.pageCombo.activated.connect(self.switchPage)
         layout.addWidget(self.pageCombo)
@@ -107,6 +124,10 @@ class DateForm(QWidget):
         self.generate_button = QPushButton("Generar", self)
         layout.addWidget(self.generate_button)
         self.generate_button.clicked.connect(self.generate_period)
+
+    def open_instructions(self):
+        link = QUrl.fromLocalFile("instructions.txt")
+        QDesktopServices.openUrl(QUrl(link))
 
     def switchPage(self):
         index = self.pageCombo.currentIndex()

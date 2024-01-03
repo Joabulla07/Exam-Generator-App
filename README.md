@@ -37,6 +37,7 @@ Execute tests with coverage using
    1. Example: "Tècnica 1", "Tècnica 2".
 3. Dates must have "dd/mm/yy" format. Ex: "02/02/24".
 4. You need to add the career name at first field.
+5. You can download the instructions in "instrucciones de uso" link
 
 ## Extra documentation
 1. Jira: https://joannabbado4748.atlassian.net/jira/software/projects/EDG/boards/1
